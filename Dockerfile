@@ -1,6 +1,7 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
 FROM tomcat:8.0
-MAINTAINER Tim Sutton<tim@linfiniti.com>
+MAINTAINER thinkWhere<info@thinkwhere.com>
+#Credit: Tim Sutton<tim@linfiniti.com>
 
 RUN  export DEBIAN_FRONTEND=noninteractive
 ENV  DEBIAN_FRONTEND noninteractive
@@ -23,9 +24,22 @@ ADD resources /tmp/resources
 # A little logic that will fetch the geoserver zip file if it
 # is not available locally in the resources dir and
 RUN if [ ! -f /tmp/resources/geoserver.zip ]; then \
-    wget -c http://sourceforge.net/projects/geoserver/files/GeoServer/2.8.0/geoserver-2.8.0-bin.zip -O /tmp/resources/geoserver.zip; \
+    wget -c http://sourceforge.net/projects/geoserver/files/GeoServer/2.8.2/geoserver-2.8.2-bin.zip -O /tmp/resources/geoserver.zip; \
     fi; \
     unzip /tmp/resources/geoserver.zip -d /opt && mv -v /opt/geoserver* /opt/geoserver
+
+# Add CSS Plugin 
+#RUN if [ ! -f /tmp/resources/geoserver-plugin-css.zip ]; then \
+#    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/2.8.2/extensions/geoserver-2.8.2-css-plugin.zip -O /tmp/resources/geoserver-plugin-css.zip; \
+#    fi; \
+#    unzip /tmp/resources/geoserver-plugin-css.zip -d /opt/gsplugins && mv -v /opt/gsplugins/* /opt/geoserver/webapps/geoserver/WEB-INF/lib
+
+# Add Printing Plugin 
+RUN if [ ! -f /tmp/resources/geoserver-plugin-printing.zip ]; then \
+    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/2.8.2/extensions/geoserver-2.8.2-printing-plugin.zip -O /tmp/resources/geoserver-plugin-printing.zip; \
+    fi; \
+    unzip /tmp/resources/geoserver-plugin-printing.zip -d /opt/gsplugins && mv -v /opt/gsplugins/* /opt/geoserver/webapps/geoserver/WEB-INF/lib
+
 ENV GEOSERVER_HOME /opt/geoserver
 ENV JAVA_HOME /usr/
 
