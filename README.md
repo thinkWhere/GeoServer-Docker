@@ -24,7 +24,7 @@ docker pull thinkwhere/geoserver
 To build the image yourself do:
 
 ```
-docker build -t thinkwhere/geoserver git://github.com/thinkwhere/geoserver_docker
+docker build -t thinkwhere/geoserver git://github.com/thinkwhere/geoserver-docker
 ```
 
 To build with apt-cacher-ng (and minimised download requirements) you need to
@@ -33,7 +33,7 @@ match your cacher host. Then build using a local url instead of directly from
 github.
 
 ```
-git clone git://github.com/thinkwhere/geoserver_docker
+git clone git://github.com/thinkwhere/geoserver-docker
 ```
 Now edit ``71-apt-cacher-ng`` 
 
