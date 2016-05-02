@@ -13,6 +13,6 @@ docker run \
 	--name=geoserver_8085 \
 	-p 8085:8080 \
 	-d \
-	-v $HOME/geoserver_data:/opt/geoserver/data_dir \
+	-v $DATA_DIR:/opt/geoserver/data_dir \
 	-e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" \
 	-t thinkwhere/geoserver
