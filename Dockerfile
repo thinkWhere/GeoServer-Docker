@@ -47,6 +47,7 @@ RUN wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-l
     rm -r /tmp/jai-1_1_3 && \
     rm /tmp/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
     rm -r /tmp/jai_imageio-1_1
+
 WORKDIR $CATALINA_HOME
 
 # Fetch the geoserver war file if it
@@ -70,8 +71,7 @@ RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
     fi
 
 # Overlay files and directories in resources/overlays if they exist
-RUN rm /tmp/resources/overlays/README.txt && \
-    if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
+RUN if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
       cp -rf /tmp/resources/overlays/* /; \
     fi;
 
