@@ -33,9 +33,11 @@ ENV JAVA_HOME /usr/lib/jvm/default-java
 
 ADD resources /tmp/resources
 
-#Add JAI and ImageIO for improved performance.
+# Optionally add JAI and ImageIO for improved performance.
 WORKDIR /tmp
-RUN wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz && \
+ARG JAI_IMAGEIO=true
+RUN if [ "$JAI_IMAGEIO" = true ]; then \
+    wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz && \
     wget http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
     gunzip -c jai-1_1_3-lib-linux-amd64.tar.gz | tar xf - && \
     gunzip -c jai_imageio-1_1-lib-linux-amd64.tar.gz | tar xf - && \
@@ -46,7 +48,8 @@ RUN wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-l
     rm /tmp/jai-1_1_3-lib-linux-amd64.tar.gz && \
     rm -r /tmp/jai-1_1_3 && \
     rm /tmp/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
-    rm -r /tmp/jai_imageio-1_1
+    rm -r /tmp/jai_imageio-1_1; \
+    fi
 
 WORKDIR $CATALINA_HOME
 
