@@ -59,6 +59,39 @@ build.sh.)
 docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver-docker .
 ```
 
+### Native JAI / JAI ImageIO
+
+Native JAI and JAI ImageIO are included in the final image by default. You can remove
+them from the final image by setting the `JAI_IMAGEIO` build-arg to `false` when building
+the image.
+
+```shell
+docker build --build-arg JAI_IMAGEIO=false -t thinkwhere/geoserver-docker .
+```
+
+### GDAL Image Formats support
+
+You can optionally include native GDAL libraries and GDAL extension in the image to enable
+support for GDAL image formats.
+
+To include native GDAL libraries in the image, set the `GDAL_NATIVE` build-arg to `true`
+when building the image.
+
+```shell
+docker build --build-arg GDAL_NATIVE=true -t thinkwhere/geoserver-docker .
+```
+
+To include the GDAL extension in the final image download the extension and place the zip
+file in the `resources/plugins` folder before building the image. If you use the build.sh
+script to build the image simply uncomment the relevant part of the script.
+
+```shell
+#if [ ! -f resources/plugins/geoserver-gdal-plugin.zip ]
+#then
+#    wget -c http://netix.dl.sourceforge.net/project/geoserver/GeoServer/2.8.3/extensions/geoserver-2.8.3-gdal-plugin.zip -O resources/plugins/geoserver-gdal-plugin.zip
+#fi
+```
+
 ## Run
 
 ### External geoserver_data directory
