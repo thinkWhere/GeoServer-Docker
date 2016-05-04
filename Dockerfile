@@ -51,6 +51,20 @@ RUN if [ "$JAI_IMAGEIO" = true ]; then \
     rm -r /tmp/jai_imageio-1_1; \
     fi
 
+# Add GDAL native libraries if the build-arg GDAL_NATIVE = true
+ARG GDAL_NATIVE=false
+# EWC and JP2ECW are subjected to licence restrictions
+ENV GDAL_SKIP "ECW JP2ECW"
+ENV GDAL_DATA $CATALINA_HOME/gdal-data
+ENV LD_LIBRARY_PATH $JAVA_HOME/jre/lib/amd64/gdal
+RUN if [ "$GDAL_NATIVE" = true ]; then \
+    wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.12/native/gdal/gdal-data.zip && \
+    wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.12/native/gdal/linux/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz && \
+    unzip gdal-data.zip -d $CATALINA_HOME && \
+    mkdir $JAVA_HOME/jre/lib/amd64/gdal && \
+    tar -xvf gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz -C $LD_LIBRARY_PATH; \
+    fi
+
 WORKDIR $CATALINA_HOME
 
 # Fetch the geoserver war file if it

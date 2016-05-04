@@ -24,6 +24,9 @@ if [ ! -f resources/plugins/geoserver-monitor-plugin.zip ]
 then
     wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/2.8.3/extensions/geoserver-2.8.3-monitor-plugin.zip -O resources/plugins/geoserver-monitor-plugin.zip
 fi
-
+#if [ ! -f resources/plugins/geoserver-gdal-plugin.zip ]
+#then
+#    wget -c http://netix.dl.sourceforge.net/project/geoserver/GeoServer/2.8.3/extensions/geoserver-2.8.3-gdal-plugin.zip -O resources/plugins/geoserver-gdal-plugin.zip
+#fi
 
 docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
