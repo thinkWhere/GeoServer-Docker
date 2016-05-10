@@ -61,9 +61,11 @@ docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver-docker .
 
 ### Native JAI / JAI ImageIO
 
-Native JAI and JAI ImageIO are included in the final image by default. You can remove
-them from the final image by setting the `JAI_IMAGEIO` build-arg to `false` when building
-the image.
+Native JAI and JAI ImageIO are included in the final image by default providing better
+performance for raster data processing. Unfortunately they native JAI is not under active
+development anymore. In the event that you face issues with raster data processing,
+they can remove them from the final image by setting the `JAI_IMAGEIO` build-arg to `false`
+when building the image.
 
 ```shell
 docker build --build-arg JAI_IMAGEIO=false -t thinkwhere/geoserver-docker .
