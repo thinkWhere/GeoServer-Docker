@@ -33,9 +33,11 @@ ENV JAVA_HOME /usr/lib/jvm/default-java
 
 ADD resources /tmp/resources
 
-#Add JAI and ImageIO for improved performance.
+# Optionally add JAI and ImageIO for improved performance.
 WORKDIR /tmp
-RUN wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz && \
+ARG JAI_IMAGEIO=true
+RUN if [ "$JAI_IMAGEIO" = true ]; then \
+    wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz && \
     wget http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
     gunzip -c jai-1_1_3-lib-linux-amd64.tar.gz | tar xf - && \
     gunzip -c jai_imageio-1_1-lib-linux-amd64.tar.gz | tar xf - && \
@@ -46,7 +48,23 @@ RUN wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-l
     rm /tmp/jai-1_1_3-lib-linux-amd64.tar.gz && \
     rm -r /tmp/jai-1_1_3 && \
     rm /tmp/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
-    rm -r /tmp/jai_imageio-1_1
+    rm -r /tmp/jai_imageio-1_1; \
+    fi
+
+# Add GDAL native libraries if the build-arg GDAL_NATIVE = true
+ARG GDAL_NATIVE=false
+# EWC and JP2ECW are subjected to licence restrictions
+ENV GDAL_SKIP "ECW JP2ECW"
+ENV GDAL_DATA $CATALINA_HOME/gdal-data
+ENV LD_LIBRARY_PATH $JAVA_HOME/jre/lib/amd64/gdal
+RUN if [ "$GDAL_NATIVE" = true ]; then \
+    wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.12/native/gdal/gdal-data.zip && \
+    wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.12/native/gdal/linux/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz && \
+    unzip gdal-data.zip -d $CATALINA_HOME && \
+    mkdir $JAVA_HOME/jre/lib/amd64/gdal && \
+    tar -xvf gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz -C $LD_LIBRARY_PATH; \
+    fi
+
 WORKDIR $CATALINA_HOME
 
 # Fetch the geoserver war file if it
@@ -70,8 +88,7 @@ RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
     fi
 
 # Overlay files and directories in resources/overlays if they exist
-RUN rm /tmp/resources/overlays/README.txt && \
-    if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
+RUN if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
       cp -rf /tmp/resources/overlays/* /; \
     fi;
 
