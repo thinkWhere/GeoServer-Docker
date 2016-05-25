@@ -1,0 +1,37 @@
+version: '2'
+services:
+  nginx:
+    container_name: nginx_loadbalance
+    restart: always
+    image: nginx
+    ports:
+     - "80:8080"
+    volumes:
+     - ~/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    links:
+     - geoserver_8085
+     - geoserver_8086
+  geoserver_8085:
+    container_name: geoserver_8085
+    restart: always
+    image: thinkwhere/geoserver
+    hostname: geoserver_8085
+    ports:
+     - "8085:8080"
+    environment:
+     - GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log
+    volumes:
+     - ~/geoserver_data:/opt/geoserver/data_dir
+     - ~/tomcat_settings/setenv.sh:/usr/local/tomcat/bin/setenv.sh
+  geoserver_8086:
+    container_name: geoserver_8086
+    restart: always
+    image: thinkwhere/geoserver
+    hostname: geoserver_8086
+    ports:
+     - "8086:8080"
+    environment:
+     - GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8086.log
+    volumes:
+     - ~/geoserver_data:/opt/geoserver/data_dir
+     - ~/tomcat_settings/setenv.sh:/usr/local/tomcat/bin/setenv.sh

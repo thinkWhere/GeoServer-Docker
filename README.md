@@ -148,6 +148,18 @@ docker run -d \
 
 This repository contains a ``run.sh`` script for your convenience.
 
+### Using docker-compose
+
+Docker-compose allows you to deploy a load-balanced cluster of geoserver containers with a single command.  A sample docker-compose.yml configuration file is included in this repository, along with a sample nginx configuration file.
+
+To deploy using docker-compose:
+
+1. copy nginx folder from this repository to your machine.
+2. copy tomcat_settings folder from this repository to your machine.
+3. copy docker-compose.yml to your machine.  Edit the volume entries to reflect the correct location of your geoserver_data, nginx and tomcat_settings folders on your machine.
+4. type `docker-compose up -d`  to start up a load-balanced cluster of 2x geoserver containers + nginx.
+5. access geoserver services at  http://localhost/geoserver/wms?
+
 **Note:** The default geoserver user is 'admin' and the password is 'geoserver'.
 It is recommended that these are changed for production systems.
 
