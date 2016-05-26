@@ -85,7 +85,7 @@ RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
         && mv /tmp/gs_plugin/*.jar $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/ \
         && rm -rf /tmp/gs_plugin; \
       done; \
-    fi
+    fi;
 
 # Overlay files and directories in resources/overlays if they exist
 RUN if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
@@ -95,8 +95,8 @@ RUN if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
 # Optionally disable GeoWebCache
 ARG DISABLE_GWC=false
 RUN if [ "$DISABLE_GWC" = true ]; then \
-      rm $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/gwc*.jar; \
-    fi	
+      rm $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/*gwc*; \
+    fi;	
 
 # Optionally remove Tomcat manager, docs, and examples
 ARG TOMCAT_EXTRAS=true
