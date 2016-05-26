@@ -50,7 +50,7 @@ RUN if [ "$JAI_IMAGEIO" = true ]; then \
     rm /tmp/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
     rm -r /tmp/jai_imageio-1_1; \
     fi
-
+	
 # Add GDAL native libraries if the build-arg GDAL_NATIVE = true
 ARG GDAL_NATIVE=false
 # EWC and JP2ECW are subjected to licence restrictions
@@ -91,6 +91,12 @@ RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
 RUN if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
       cp -rf /tmp/resources/overlays/* /; \
     fi;
+
+# Optionally disable GeoWebCache
+ARG DISABLE_GWC=false
+RUN if [ "$DISABLE_GWC" = true ]; then \
+      rm $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/gwc*.jar; \
+    fi	
 
 # Optionally remove Tomcat manager, docs, and examples
 ARG TOMCAT_EXTRAS=true
