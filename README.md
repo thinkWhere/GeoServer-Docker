@@ -59,6 +59,16 @@ build.sh.)
 docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver-docker .
 ```
 
+### GeoWebCache
+
+GeoServer is installed by default with the integrated GeoWebCache functionality.  If you are using
+the stand-alone GeoWebCache, or another caching engine such as MapProxy, remove the built-in GWC
+by setting the `DISABLE_GWC` build-arg to `true` when building the image.
+
+```shell
+docker build --build-arg DISABLE_GWC=true -t thinkwhere/geoserver-docker .
+```
+
 ### Native JAI / JAI ImageIO
 
 Native JAI and JAI ImageIO are included in the final image by default providing better
