@@ -6,7 +6,7 @@ recipe: https://github.com/kartoza/docker-geoserver by Tim Sutton
 This container is configured to build with:
 * Tomcat8.5
 * Openjdk 8 
-* GeoServer 2.8.3
+* GeoServer 2.8.x / 2.9.x
 * GeoServer Plugins: Any plugins downloaded to /resources/plugins
 
 
@@ -25,7 +25,7 @@ docker pull thinkwhere/geoserver
 To build the image yourself do:
 
 ```shell
-docker build -t thinkwhere/geoserver git://github.com/thinkwhere/geoserver-docker
+docker build -t thinkwhere/geoserver git://github.com/thinkwhere/geoserver-docker/2.9
 ```
 
 To build with apt-cacher-ng (and minimised download requirements) you need to
