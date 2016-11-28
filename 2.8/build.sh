@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GS_VERSION=2.8.4
+GS_VERSION=2.8.5
 
 # Create plugins folder if does not exist
 if [ ! -d ./resources ]
@@ -31,5 +31,5 @@ fi
 #    wget -c http://netix.dl.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-gdal-plugin.zip -O resources/plugins/geoserver-gdal-plugin.zip
 #fi
 
-docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
-#docker build --build-arg DISABLE_GWC=true --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
+#docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
+docker build --build-arg DISABLE_GWC=true --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .

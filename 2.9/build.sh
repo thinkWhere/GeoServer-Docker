@@ -11,7 +11,7 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.9.1
+GS_VERSION=2.9.3
 
 # Add in selected plugins.  Comment out or modify as required
 if [ ! -f resources/plugins/geoserver-control-flow-plugin.zip ]
@@ -31,4 +31,5 @@ fi
 #    wget -c http://netix.dl.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-gdal-plugin.zip -O resources/plugins/geoserver-gdal-plugin.zip
 #fi
 
-docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
+#docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
+docker build --build-arg DISABLE_GWC=true --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
