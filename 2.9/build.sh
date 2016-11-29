@@ -34,4 +34,3 @@ fi
 docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
 ## Note: disabling GWC may conflict with plugins in 2.9+ that have this as a dependency
 #docker build --build-arg DISABLE_GWC=true --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
-
