@@ -93,6 +93,8 @@ RUN if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
     fi;
 
 # Optionally disable GeoWebCache
+# (Note that this forcibly removes all gwc files. This may cause errors with extensions that depend on gwc files
+#   including:  Inspire; Control-Flow; )
 ARG DISABLE_GWC=false
 RUN if [ "$DISABLE_GWC" = true ]; then \
       rm $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/*gwc*; \
