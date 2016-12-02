@@ -1,12 +1,12 @@
 # docker-geoserver
 
 A simple docker container that runs Geoserver influenced by this docker
-recipe: https://github.com/kartoza/docker-geoserver by Tim Sutton
+recipe: https://github.com/kartoza/docker-geoserver by Tim Sutton. Created with input from GeoSolutions.
 
 This container is configured to build with:
 * Tomcat8.5
 * Openjdk 8 
-* GeoServer 2.8.x / 2.9.x
+* GeoServer 2.8.x / 2.9.x / 2.10.x
 * GeoServer Plugins: Any plugins downloaded to /resources/plugins
 
 
@@ -68,6 +68,10 @@ by setting the `DISABLE_GWC` build-arg to `true` when building the image.
 ```shell
 docker build --build-arg DISABLE_GWC=true -t thinkwhere/geoserver-docker .
 ```
+
+**Note:** this removes all *gwc* jar files from the installation. If you are building with plugins that have 
+dependencies on the gwc classes, using this option could prevent geoserver from initializing.  
+(examples include:  INSPIRE plugin v2.9.2+; control-flow plugin v2.9.2+)
 
 ### Native JAI / JAI ImageIO
 
