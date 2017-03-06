@@ -8,6 +8,7 @@ This container is configured to build with:
 * Openjdk 8 
 * GeoServer 2.8.x / 2.9.x / 2.10.x
 * GeoServer Plugins: Any plugins downloaded to /resources/plugins
+* Truetype fonts: Any .ttf fonts copied to the /resources/fonts folder will be included in the container
 
 
 **Note:** We recommend using ``apt-cacher-ng`` to speed up package fetching -
@@ -48,6 +49,11 @@ download the plugin zip files from the GeoServer download page and put them in
 GeoServer you are installing.
 GeoServer version is controlled by the variable in Dockerfile, or download the WAR bundle
 for the version you want to `resources/geoserver.zip` before building.
+
+### Custom Fonts
+
+To include any .ttf fonts with symbols in your container, copy them into the `resources/fonts` folder
+before building.
 
 ### Tomcat Extras
 
