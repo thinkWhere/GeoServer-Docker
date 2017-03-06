@@ -96,7 +96,6 @@ RUN if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
 RUN if ls /tmp/resources/fonts/*.ttf > /dev/null 2>&1; then \
       cp -rf /tmp/resources/fonts/*.ttf /usr/share/fonts/truetype/; \
 	fi;
-	    
 	
 # Optionally disable GeoWebCache 
 # (Note that this forcibly removes all gwc files. This may cause errors with extensions that depend on gwc files
