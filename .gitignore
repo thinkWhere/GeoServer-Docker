@@ -1,3 +1,7 @@
+# Ignore downloaded application and plugins
 *.zip
+
+# Ignore any fonts
 *.ttf
+*.otf
 
