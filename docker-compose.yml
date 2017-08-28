@@ -4,6 +4,11 @@ services:
     container_name: nginx_loadbalance
     restart: always
     image: nginx
+    logging:
+        driver: "json-file"
+        options:
+            max-size: "10m"
+            max-file: "10"
     ports:
      - "80:8080"
     volumes:
