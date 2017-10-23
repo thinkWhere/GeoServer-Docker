@@ -20,6 +20,11 @@ services:
     container_name: geoserver_8085
     restart: always
     image: thinkwhere/geoserver:2.12
+    logging:
+        driver: "json-file"
+        options:
+            max-size: "10m"
+            max-file: "10"
     hostname: geoserver_8085
     ports:
      - "8085:8080"
@@ -34,6 +39,11 @@ services:
     container_name: geoserver_8086
     restart: always
     image: thinkwhere/geoserver:2.12
+    logging:
+        driver: "json-file"
+        options:
+            max-size: "10m"
+            max-file: "10"
     hostname: geoserver_8086
     ports:
      - "8086:8080"
