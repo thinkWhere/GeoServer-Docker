@@ -11,7 +11,7 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.12.1
+GS_VERSION=2.12.2
 
 # Add in selected plugins.  Comment out or modify as required
 if [ ! -f resources/plugins/geoserver-control-flow-plugin.zip ]
@@ -25,6 +25,14 @@ fi
 if [ ! -f resources/plugins/geoserver-monitor-plugin.zip ]
 then
     wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-monitor-plugin.zip -O resources/plugins/geoserver-monitor-plugin.zip
+fi
+if [ ! -f resources/plugins/geoserver-css-plugin.zip ]
+then
+    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-css-plugin.zip -O resources/plugins/geoserver-css-plugin.zip
+fi
+if [ ! -f resources/plugins/geoserver-ysld-plugin.zip ]
+then
+    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-ysld-plugin.zip -O resources/plugins/geoserver-ysld-plugin.zip
 fi
 #if [ ! -f resources/plugins/geoserver-gdal-plugin.zip ]
 #then
