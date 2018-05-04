@@ -18,7 +18,7 @@ RUN apt-get -y update
 
 #-------------Application Specific Stuff ----------------------------------------------------
 
-ENV GS_VERSION 2.11.4
+ENV GS_VERSION 2.11.5
 ENV GEOSERVER_DATA_DIR /opt/geoserver/data_dir
 
 RUN mkdir -p $GEOSERVER_DATA_DIR
@@ -58,14 +58,21 @@ ENV GDAL_SKIP "ECW JP2ECW"
 ENV GDAL_DATA $CATALINA_HOME/gdal-data
 ENV LD_LIBRARY_PATH $JAVA_HOME/jre/lib/amd64/gdal
 RUN if [ "$GDAL_NATIVE" = true ]; then \
-    wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.12/native/gdal/gdal-data.zip && \
-    wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.12/native/gdal/linux/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz && \
-    unzip gdal-data.zip -d $CATALINA_HOME && \
-    mkdir $JAVA_HOME/jre/lib/amd64/gdal && \
-    tar -xvf gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz -C $LD_LIBRARY_PATH; \
-    fi
+		wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.16/native/gdal/gdal-data.zip && \
+		wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.16/native/gdal/linux/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz && \
+		unzip gdal-data.zip -d $CATALINA_HOME && \
+		mkdir $JAVA_HOME/jre/lib/amd64/gdal && \
+		tar -xvf gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz -C $LD_LIBRARY_PATH; \
+    fi;
+
+# If using GDAL make sure extension is downloaded
+RUN if [ "$GDAL_NATIVE" = true ] && [ ! -f /tmp/resources/plugins/geoserver-gdal-plugin.zip ]; then \
+		wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-gdal-plugin.zip \
+		-O /tmp/resources/plugins/geoserver-gdal-plugin.zip; \
+	fi;
 
 WORKDIR $CATALINA_HOME
+
 
 # Fetch the geoserver war file if it
 # is not available locally in the resources dir and
