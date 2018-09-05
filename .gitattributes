@@ -1,0 +1,9 @@
+# These settings are for any web project
+
+# Handle line endings automatically for files detected as text
+# and leave all files detected as binary untouched.
+* text=auto
+
+# Force the following filetypes to have linux line endings
+*.sh text eol=lf
+
