@@ -11,7 +11,7 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.14.2
+GS_VERSION=2.14.5
 
 # Add in selected plugins.  Comment out or modify as required
 if [ ! -f resources/plugins/geoserver-control-flow-plugin.zip ]
