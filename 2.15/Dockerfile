@@ -1,5 +1,5 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-FROM tomcat:8.5
+FROM tomcat:9.0-jre11-slim
 MAINTAINER thinkWhere<info@thinkwhere.com>
 #Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
@@ -14,11 +14,11 @@ RUN  dpkg-divert --local --rename --add /sbin/initctl
 # Or comment this line out if you do not with to use caching
 ADD 71-apt-cacher-ng /etc/apt/apt.conf.d/71-apt-cacher-ng
 
-RUN apt-get -y update
+RUN apt-get -y update && apt-get -y install wget
 
 #-------------Application Specific Stuff ----------------------------------------------------
 
-ENV GS_VERSION 2.13.4
+ENV GS_VERSION 2.15.2
 ENV GEOSERVER_DATA_DIR /opt/geoserver/data_dir
 
 RUN mkdir -p $GEOSERVER_DATA_DIR
@@ -28,28 +28,28 @@ ENV JAVA_VERSION=
 ENV JAVA_DEBIAN_VERSION=
 
 # Set JAVA_HOME to /usr/lib/jvm/default-java and link it to OpenJDK installation
-RUN ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/default-java
+RUN ln -s /usr/lib/jvm/java-11-openjdk-amd64 /usr/lib/jvm/default-java
 ENV JAVA_HOME /usr/lib/jvm/default-java
 
 ADD resources /tmp/resources
 
-# Optionally add JAI and ImageIO for improved performance.
+# Optionally add JAI and ImageIO for improved performance. # not supported by jre11
 WORKDIR /tmp
-ARG JAI_IMAGEIO=true
-RUN if [ "$JAI_IMAGEIO" = true ]; then \
-    wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz && \
-    wget http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
-    gunzip -c jai-1_1_3-lib-linux-amd64.tar.gz | tar xf - && \
-    gunzip -c jai_imageio-1_1-lib-linux-amd64.tar.gz | tar xf - && \
-    mv /tmp/jai-1_1_3/lib/*.jar $JAVA_HOME/jre/lib/ext/ && \
-    mv /tmp/jai-1_1_3/lib/*.so $JAVA_HOME/jre/lib/amd64/ && \
-    mv /tmp/jai_imageio-1_1/lib/*.jar $JAVA_HOME/jre/lib/ext/ && \
-    mv /tmp/jai_imageio-1_1/lib/*.so $JAVA_HOME/jre/lib/amd64/ && \
-    rm /tmp/jai-1_1_3-lib-linux-amd64.tar.gz && \
-    rm -r /tmp/jai-1_1_3 && \
-    rm /tmp/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
-    rm -r /tmp/jai_imageio-1_1; \
-    fi
+#ARG JAI_IMAGEIO=true
+#RUN if [ "$JAI_IMAGEIO" = true ]; then \
+#    wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz && \
+#    wget http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
+#    gunzip -c jai-1_1_3-lib-linux-amd64.tar.gz | tar xf - && \
+#    gunzip -c jai_imageio-1_1-lib-linux-amd64.tar.gz | tar xf - && \
+#    mv /tmp/jai-1_1_3/lib/*.jar $JAVA_HOME/jre/lib/ext/ && \
+#    mv /tmp/jai-1_1_3/lib/*.so $JAVA_HOME/jre/lib/amd64/ && \
+#    mv /tmp/jai_imageio-1_1/lib/*.jar $JAVA_HOME/jre/lib/ext/ && \
+#    mv /tmp/jai_imageio-1_1/lib/*.so $JAVA_HOME/jre/lib/amd64/ && \
+#    rm /tmp/jai-1_1_3-lib-linux-amd64.tar.gz && \
+#    rm -r /tmp/jai-1_1_3 && \
+#    rm /tmp/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
+#    rm -r /tmp/jai_imageio-1_1; \
+#    fi
 	
 # Add GDAL native libraries if the build-arg GDAL_NATIVE = true
 ARG GDAL_NATIVE=false
