@@ -6,7 +6,7 @@ recipe: https://github.com/kartoza/docker-geoserver by Tim Sutton. Created with 
 This container is configured to build with:
 * Tomcat8.5
 * Openjdk 8 
-* GeoServer 2.8.x / 2.9.x / 2.10.x / 2.11.x
+* GeoServer 2.8.x - 2.16.x
 * GeoServer Plugins: Any plugins downloaded to /resources/plugins
 * Truetype fonts: Any .ttf fonts copied to the /resources/fonts folder will be included in the container
 
