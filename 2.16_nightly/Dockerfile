@@ -18,7 +18,7 @@ RUN apt-get -y update && apt-get -y install wget
 
 #-------------Application Specific Stuff ----------------------------------------------------
 
-ENV GS_VERSION 2.15.3
+ENV GS_VERSION 2.16
 ENV GEOSERVER_DATA_DIR /opt/geoserver/data_dir
 
 RUN mkdir -p $GEOSERVER_DATA_DIR
@@ -67,7 +67,7 @@ RUN if [ "$GDAL_NATIVE" = true ]; then \
 
 # If using GDAL make sure extension is downloaded
 RUN if [ "$GDAL_NATIVE" = true ] && [ ! -f /tmp/resources/plugins/geoserver-gdal-plugin.zip ]; then \
-		wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-gdal-plugin.zip \
+		wget -c https://build.geoserver.org/geoserver/${GS_VERSION}.x/ext-latest/geoserver-${GS_VERSION}-SNAPSHOT-gdal-plugin.zip \
 		-O /tmp/resources/plugins/geoserver-gdal-plugin.zip; \
 	fi;
 
@@ -76,7 +76,7 @@ WORKDIR $CATALINA_HOME
 # Fetch the geoserver war file if it
 # is not available locally in the resources dir and
 RUN if [ ! -f /tmp/resources/geoserver.zip ]; then \
-    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/geoserver-${GS_VERSION}-war.zip \
+    wget -c https://build.geoserver.org/geoserver/${GS_VERSION}.x/geoserver-${GS_VERSION}.x-latest-war.zip \
       -O /tmp/resources/geoserver.zip; \
     fi; \
     unzip /tmp/resources/geoserver.zip -d /tmp/geoserver \

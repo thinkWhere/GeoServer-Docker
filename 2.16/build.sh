@@ -11,7 +11,7 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.15.3
+GS_VERSION=2.16.0
 
 # Add in selected plugins.  Comment out or modify as required
 if [ ! -f resources/plugins/geoserver-control-flow-plugin.zip ]
@@ -38,6 +38,10 @@ fi
 #then
 #    wget -c http://netix.dl.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-gdal-plugin.zip -O resources/plugins/geoserver-gdal-plugin.zip
 #fi
+if [ ! -f resources/plugins/geoserver-sldservice-plugin.zip ]
+then
+    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-sldservice-plugin.zip -O resources/plugins/geoserver-sldservice-plugin.zip
+fi
 
 docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
 ## Note: disabling GWC may conflict with plugins in 2.9+ that have this as a dependency
