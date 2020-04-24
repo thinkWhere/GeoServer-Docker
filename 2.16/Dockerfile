@@ -59,11 +59,15 @@ ENV GDAL_DATA $CATALINA_HOME/gdal-data
 ENV LD_LIBRARY_PATH $JAVA_HOME/jre/lib/amd64/gdal
 RUN if [ "$GDAL_NATIVE" = true ]; then \
     wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.16/native/gdal/gdal-data.zip && \
-    wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.16/native/gdal/linux/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz && \
+    wget http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.16/native/gdal/linux/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz; \
+    fi
+
+RUN if [ "$GDAL_NATIVE" = true ]; then \
     unzip gdal-data.zip -d $CATALINA_HOME && \
-    mkdir $JAVA_HOME/jre/lib/amd64/gdal && \
+    mkdir -p $JAVA_HOME/jre/lib/amd64/gdal && \
     tar -xvf gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz -C $LD_LIBRARY_PATH; \
     fi
+
 
 # If using GDAL make sure extension is downloaded
 RUN if [ "$GDAL_NATIVE" = true ] && [ ! -f /tmp/resources/plugins/geoserver-gdal-plugin.zip ]; then \
