@@ -18,7 +18,7 @@ RUN apt-get -y update && apt-get -y install wget
 
 #-------------Application Specific Stuff ----------------------------------------------------
 
-ENV GS_VERSION 2.15.3
+ENV GS_VERSION 2.15.5
 ENV GEOSERVER_DATA_DIR /opt/geoserver/data_dir
 
 RUN mkdir -p $GEOSERVER_DATA_DIR
