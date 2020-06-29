@@ -4,7 +4,7 @@ MAINTAINER thinkWhere<info@thinkwhere.com>
 #Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
 
-RUN apt-get -y update; apt-get -y install software-properties-common build-essential libapr1-dev \
+RUN apt-get -y update; apt-get -y install libapr1-dev \
     libssl-dev wget zip curl xsltproc certbot cabextract
 
 RUN set -e \
@@ -18,7 +18,7 @@ RUN set -e \
 
 #-------------Application Specific Stuff ----------------------------------------------------
 
-ENV GS_VERSION 2.17.0
+ARG GS_VERSION=2.17.0
 
 ENV JAVA_HOME=/usr/lib/jvm/default-java \
 	DEBIAN_FRONTEND=noninteractive \
@@ -32,31 +32,13 @@ RUN mkdir -p ${GEOSERVER_DATA_DIR}
 
 ADD resources /tmp/resources
 
-# Optionally add JAI and ImageIO for improved performance. # not supported by jre11
-WORKDIR /tmp
-#ARG JAI_IMAGEIO=true
-#RUN if [ "$JAI_IMAGEIO" = true ]; then \
-#    wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-amd64.tar.gz && \
-#    wget http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
-#    gunzip -c jai-1_1_3-lib-linux-amd64.tar.gz | tar xf - && \
-#    gunzip -c jai_imageio-1_1-lib-linux-amd64.tar.gz | tar xf - && \
-#    mv /tmp/jai-1_1_3/lib/*.jar $JAVA_HOME/jre/lib/ext/ && \
-#    mv /tmp/jai-1_1_3/lib/*.so $JAVA_HOME/jre/lib/amd64/ && \
-#    mv /tmp/jai_imageio-1_1/lib/*.jar $JAVA_HOME/jre/lib/ext/ && \
-#    mv /tmp/jai_imageio-1_1/lib/*.so $JAVA_HOME/jre/lib/amd64/ && \
-#    rm /tmp/jai-1_1_3-lib-linux-amd64.tar.gz && \
-#    rm -r /tmp/jai-1_1_3 && \
-#    rm /tmp/jai_imageio-1_1-lib-linux-amd64.tar.gz && \
-#    rm -r /tmp/jai_imageio-1_1; \
-#    fi
-	
 # Add GDAL native libraries if the build-arg GDAL_NATIVE = true
-ARG GDAL_NATIVE=false
 # EWC and JP2ECW are subjected to licence restrictions
+ARG GDAL_NATIVE=false
 RUN if [ "$GDAL_NATIVE" = true ]; then \
-    wget --progress=bar:force:noscroll http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.16/native/gdal/gdal-data.zip \
+    wget --progress=bar http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.16/native/gdal/gdal-data.zip \
 	-O /tmp/resources/gdal-data.zip && \
-    wget --progress=bar:force:noscroll http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.29/native/gdal/linux/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz \
+    wget --progress=bar http://demo.geo-solutions.it/share/github/imageio-ext/releases/1.1.X/1.1.29/native/gdal/linux/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz \
 	-O /tmp/resources/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz && \
     unzip /tmp/resources/gdal-data.zip -d /usr/local && \
     mkdir /usr/local/gdal_native_libs && \
@@ -68,7 +50,7 @@ fi;
 
 # If using GDAL make sure extension is downloaded
 RUN if [ "$GDAL_NATIVE" = true ] && [ ! -f /tmp/resources/plugins/geoserver-gdal-plugin.zip ]; then \
-	wget --progress=bar:force:noscroll -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-gdal-plugin.zip \
+	wget --progress=bar -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-gdal-plugin.zip \
 	-O /tmp/resources/plugins/geoserver-gdal-plugin.zip; \
 fi;
 
@@ -77,7 +59,7 @@ WORKDIR $CATALINA_HOME
 # Fetch the geoserver war file if it
 # is not available locally in the resources dir and
 RUN if [ ! -f /tmp/resources/geoserver.zip ]; then \
-    wget --progress=bar:force:noscroll -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/geoserver-${GS_VERSION}-war.zip \
+    wget --progress=bar -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/geoserver-${GS_VERSION}-war.zip \
       -O /tmp/resources/geoserver.zip; \
     fi; \
     unzip /tmp/resources/geoserver.zip -d /tmp/geoserver \
@@ -94,23 +76,10 @@ RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
       done; \
     fi;
 
-# Overlay files and directories in resources/overlays if they exist
-RUN if ls /tmp/resources/overlays/* > /dev/null 2>&1; then \
-      cp -rf /tmp/resources/overlays/* /; \
-    fi;
-
 # install Font files in resources/fonts if they exist
 RUN if ls /tmp/resources/fonts/*.ttf > /dev/null 2>&1; then \
       cp -rf /tmp/resources/fonts/*.ttf /usr/share/fonts/truetype/; \
 	fi;
-
-# Optionally disable GeoWebCache
-# (Note that this forcibly removes all gwc files. This may cause errors with extensions that depend on gwc files
-#   including:  Inspire; Control-Flow; )
-ARG DISABLE_GWC=false
-RUN if [ "$DISABLE_GWC" = true ]; then \
-      rm $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/*gwc*; \
-    fi;	
 
 # Optionally remove Tomcat manager, docs, and examples
 ARG TOMCAT_EXTRAS=true
