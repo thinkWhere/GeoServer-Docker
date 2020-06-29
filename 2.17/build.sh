@@ -14,37 +14,19 @@ fi
 GS_VERSION=2.17.0
 
 # Add in selected plugins.  Comment out or modify as required
-if [ ! -f resources/plugins/geoserver-control-flow-plugin.zip ]
-then
-    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-control-flow-plugin.zip -O resources/plugins/geoserver-control-flow-plugin.zip
-fi
-if [ ! -f resources/plugins/geoserver-inspire-plugin.zip ]
-then
-    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-inspire-plugin.zip -O resources/plugins/geoserver-inspire-plugin.zip
-fi
-if [ ! -f resources/plugins/geoserver-monitor-plugin.zip ]
-then
-    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-monitor-plugin.zip -O resources/plugins/geoserver-monitor-plugin.zip
-fi
-if [ ! -f resources/plugins/geoserver-css-plugin.zip ]
-then
-    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-css-plugin.zip -O resources/plugins/geoserver-css-plugin.zip
-fi
-if [ ! -f resources/plugins/geoserver-ysld-plugin.zip ]
-then
-    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-ysld-plugin.zip -O resources/plugins/geoserver-ysld-plugin.zip
-fi
-if [ ! -f resources/plugins/geoserver-gdal-plugin.zip ]
-then
-    wget -c http://netix.dl.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-gdal-plugin.zip -O resources/plugins/geoserver-gdal-plugin.zip
-fi
-if [ ! -f resources/plugins/geoserver-sldservice-plugin.zip ]
-then
-    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-sldservice-plugin.zip -O resources/plugins/geoserver-sldservice-plugin.zip
-fi
-if [ ! -f resources/plugins/geoserver-web-resource-plugin.zip ]
-then
-    wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-web-resource-plugin.zip -O resources/plugins/geoserver-web-resource-plugin.zip
-fi
+plugins=(control-flow inspire monitor css ysld web-resource sldservice )
 
-docker build --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=true -t thinkwhere/geoserver .
+for p in "${plugins[@]}"
+do 
+	if [ ! -f resources/plugins/geoserver-${p}-plugin.zip ]
+	then
+		wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-${p}-plugin.zip -O resources/plugins/geoserver-${p}-plugin.zip
+	fi
+done
+
+## build options include:
+#    TOMCAT_EXTRAS  [true | false]
+#    GDAL_NATIVE    [true | false]  - default false; build with GDAL support
+#    GS_VERSION              - specifies which version of geoserver is to be built
+
+docker build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=true -t thinkwhere/geoserver:${GS_VERSION} .
