@@ -11,7 +11,7 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.16.2
+GS_VERSION=2.16.3
 
 # Add in selected plugins.  Comment out or modify as required
 if [ ! -f resources/plugins/geoserver-control-flow-plugin.zip ]
@@ -43,6 +43,9 @@ then
     wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-sldservice-plugin.zip -O resources/plugins/geoserver-sldservice-plugin.zip
 fi
 
-docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
-## Note: disabling GWC may conflict with plugins in 2.9+ that have this as a dependency
-#docker build --build-arg DISABLE_GWC=true --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver .
+## build options include:
+#    TOMCAT_EXTRAS  [true | false]
+#    DISABLE_GWC    [true | false]  - default false; no longer recommended since 2.9
+#    GDAL_NATIVE    [true | false]  - default false; build with GDAL support
+
+docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver:${GS_VERSION} .
