@@ -1,6 +1,6 @@
 @Echo off
 
-SET GS_VERSION=2.17.1
+SET GS_VERSION=2.17.5
 
 rem Create plugins folder if does not exist
 if not exist .\resources\NUL mkdir .\resources
