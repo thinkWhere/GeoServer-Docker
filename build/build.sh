@@ -11,7 +11,7 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.18.0
+GS_VERSION=2.18.3
 
 # Add in selected plugins.  Comment out or modify as required
 plugins=(control-flow inspire monitor css ysld web-resource sldservice imagemosaic-jdbc )
