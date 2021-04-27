@@ -63,6 +63,13 @@ for the version you want to `resources/geoserver.zip` before building.
 To include any .ttf fonts with symbols in your container, copy them into the `resources/fonts` folder
 before building.
 
+This repo bundles the following 3rd-party fonts:
+
+    * UN OCHA fonts for humanitarian relief mapping (http://reliefweb.int/report/world/world-humanitarian-and-country-icons-2012).
+    * Roboto fonts from google (https://github.com/google/roboto/). 
+    * Liberation Sans fonts from Red Hat (https://www.dafont.com/liberation-sans.font). 
+
+
 ### Tomcat Extras
 
 Tomcat is bundled with extras including docs, examples, etc.  If you don't need these, set
