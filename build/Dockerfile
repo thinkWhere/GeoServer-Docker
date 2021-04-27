@@ -18,8 +18,6 @@ RUN set -e \
 
 #-------------Application Specific Stuff ----------------------------------------------------
 
-ARG GS_VERSION=2.18.0
-
 ENV JAVA_HOME=/usr/lib/jvm/default-java \
 	DEBIAN_FRONTEND=noninteractive \
     GEOSERVER_DATA_DIR=/opt/geoserver/data_dir \
@@ -31,6 +29,19 @@ ENV JAVA_HOME=/usr/lib/jvm/default-java \
 RUN mkdir -p ${GEOSERVER_DATA_DIR}
 
 ADD resources /tmp/resources
+
+# Optionally remove Tomcat manager, docs, and examples
+ARG TOMCAT_EXTRAS=false
+RUN if [ "$TOMCAT_EXTRAS" = false ]; then \
+    rm -rf $CATALINA_HOME/webapps/ROOT && \
+    rm -rf $CATALINA_HOME/webapps/docs && \
+    rm -rf $CATALINA_HOME/webapps/examples && \
+    rm -rf $CATALINA_HOME/webapps/host-manager && \
+    rm -rf $CATALINA_HOME/webapps/manager; \
+  fi;
+
+# ---------- GS_Version can be passed in as a parameter ------------
+ARG GS_VERSION=2.18.0
 
 # Add GDAL native libraries if the build-arg GDAL_NATIVE = true
 # EWC and JP2ECW are subjected to licence restrictions
@@ -56,6 +67,7 @@ fi;
 
 WORKDIR $CATALINA_HOME
 
+
 # Fetch the geoserver war file if it
 # is not available locally in the resources dir and
 RUN if [ ! -f /tmp/resources/geoserver.zip ]; then \
@@ -80,16 +92,6 @@ RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
 RUN if ls /tmp/resources/fonts/*.ttf > /dev/null 2>&1; then \
       cp -rf /tmp/resources/fonts/*.ttf /usr/share/fonts/truetype/; \
 	fi;
-
-# Optionally remove Tomcat manager, docs, and examples
-ARG TOMCAT_EXTRAS=true
-RUN if [ "$TOMCAT_EXTRAS" = false ]; then \
-    rm -rf $CATALINA_HOME/webapps/ROOT && \
-    rm -rf $CATALINA_HOME/webapps/docs && \
-    rm -rf $CATALINA_HOME/webapps/examples && \
-    rm -rf $CATALINA_HOME/webapps/host-manager && \
-    rm -rf $CATALINA_HOME/webapps/manager; \
-  fi;
 
 # Delete resources after installation
 RUN rm -rf /tmp/resources

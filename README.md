@@ -4,40 +4,48 @@ A simple docker container that runs Geoserver influenced by this docker
 recipe: https://github.com/kartoza/docker-geoserver by Tim Sutton. Created with input from GeoSolutions.
 
 This container is configured to build with:
-* Tomcat8.5
-* Openjdk 8 
-* GeoServer 2.8.x - 2.16.x
-* GeoServer Plugins: Any plugins downloaded to /resources/plugins
+* Tomcat9
+* Openjdk 11 
+* GeoServer 2.8.x +
+* GeoServer Plugins: Any plugins downloaded to /resources/plugins  folder will be included in the container
 * Truetype fonts: Any .ttf fonts copied to the /resources/fonts folder will be included in the container
 
 
 **Note:** We recommend using ``apt-cacher-ng`` to speed up package fetching -
 you should configure the host for it in the provided 71-apt-cacher-ng file.
 
-## Getting the image
+## Getting Started
 
-The image can be downloaded from our image on dockerhub:
-
+The image can be downloaded from our image on dockerhub.  There are tagged images for most versions that have been released since 2.8:
 
 ```shell
 docker pull thinkwhere/geoserver
 ```
 
-To build the image yourself do:
+To build the image yourself:
 
 ```shell
-docker build -t thinkwhere/geoserver git://github.com/thinkwhere/geoserver-docker/2.9
+docker build -t thinkwhere/geoserver git://github.com/thinkwhere/geoserver-docker/build
 ```
 
-To build with apt-cacher-ng (and minimised download requirements) you need to
-clone this repo locally first and modify the contents of 71-apt-cacher-ng to
-match your cacher host. Then build using a local url instead of directly from
-github.
+Or for more control over the contents of the image, clone the repository first.  This way you can specify the version to build, and choose which fonts and plugins to include 
+
 
 ```shell
 git clone git://github.com/thinkwhere/geoserver-docker
+
+cd geoserver/build
+
+docker build --build-arg GS_VERSION=2.18.2 -t mygeoserver .
 ```
-Now edit ``71-apt-cacher-ng`` 
+
+### Build scripts
+
+For convenience, there is a `build.bat` and `build.sh` for running the build.
+- Edit these with the GeoServer version you want to build
+- Edit these to set the plugins variable with the list of plugins to include in the build
+- Run the appropriate build.x file for your environment  (build.bat for Docker in Windows;  build.sh for Docker in Linux)
+
 
 ## Options
 
@@ -47,13 +55,20 @@ To build the GeoServer image with plugins (Control Flow, Monitor, Inspire, etc),
 download the plugin zip files from the GeoServer download page and put them in 
 `resources/plugins` before building.  You should make sure these match the version of
 GeoServer you are installing.
-GeoServer version is controlled by the variable in Dockerfile, or download the WAR bundle
+GeoServer version is controlled by the variable in Dockerfile or the build script, or download the WAR bundle
 for the version you want to `resources/geoserver.zip` before building.
 
 ### Custom Fonts
 
 To include any .ttf fonts with symbols in your container, copy them into the `resources/fonts` folder
 before building.
+
+This repo bundles the following 3rd-party fonts:
+
+    * UN OCHA fonts for humanitarian relief mapping (http://reliefweb.int/report/world/world-humanitarian-and-country-icons-2012).
+    * Roboto fonts from google (https://github.com/google/roboto/). 
+    * Liberation Sans fonts from Red Hat (https://www.dafont.com/liberation-sans.font). 
+
 
 ### Tomcat Extras
 
