@@ -16,3 +16,13 @@ docker run \
 	-v $DATA_DIR:/opt/geoserver/data_dir \
 	-e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" \
 	-t thinkwhere/geoserver:latest
+
+
+# alt docker run command if s3-geotiff plugin is used
+# docker run \
+	# --name=geoserver-s3-geotiff \
+	# -p 8080:8080 \
+	# -d \
+	# -v $HOME/geoserver_data:/opt/geoserver/data_dir \
+	# -v $HOME/tomcat_settings/setenv.sh:/usr/local/tomcat/bin/setenv.sh \
+	# -t thinkwhere/geoserver-s3-geotiff
