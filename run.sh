@@ -19,6 +19,7 @@ docker run \
 
 
 # alt docker run command if s3-geotiff plugin is used
+# to ensure environment variables are set
 # docker run \
 	# --name=geoserver-s3-geotiff \
 	# -p 8080:8080 \

@@ -58,6 +58,12 @@ GeoServer you are installing.
 GeoServer version is controlled by the variable in Dockerfile or the build script, or download the WAR bundle
 for the version you want to `resources/geoserver.zip` before building.
 
+### Community Plugins
+
+Community plugins are also available (S3 Geotiff) and can be added by placing the appropraite zip file(s) in the same location.
+They are not available from the SourceForge source used in the build scripts, so additional scripting has been 
+included to source them from [GeoSever](https://build.geoserver.org/).  Make sure that these lines are included and the list of 
+plugins includes the plugin(s) required.
 ### Custom Fonts
 
 To include any .ttf fonts with symbols in your container, copy them into the `resources/fonts` folder
@@ -128,6 +134,19 @@ script to build the image simply uncomment the relevant part of the script.
 #    wget -c http://netix.dl.sourceforge.net/project/geoserver/GeoServer/2.8.3/extensions/geoserver-2.8.3-gdal-plugin.zip -O resources/plugins/geoserver-gdal-plugin.zip
 #fi
 ```
+
+### S3 Geotiff plugin
+
+The S3 Geotiff plugin is required to serve GeoTiffs from S3.<br>
+NOTE: that it is a community plugin and therefore not officially supported
+
+This plugin requires that environment variables are set for:
+- AWS_ACCESS_KEY
+- AWS_SECRET_KEY
+
+These are included in the setenv.sh file in tomcat_settings and should be edited to have appropriate values.
+
+See [Setting Tomcat properties](#setting-tomcat-properties) for an example of including this.
 
 ## Run
 
