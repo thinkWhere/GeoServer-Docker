@@ -22,6 +22,7 @@ docker run \
 # to ensure environment variables are set
 # docker run \
 	# --name=geoserver-s3-geotiff \
+	# --env-file=$HOME\env.list
 	# -p 8080:8080 \
 	# -d \
 	# -v $HOME/geoserver_data:/opt/geoserver/data_dir \
