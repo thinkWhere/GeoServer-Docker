@@ -1,6 +1,7 @@
 @Echo off
 
 SET GS_VERSION=2.18.3
+SET BUILD_GS_VERSION=%GS_VERSION:~0,4%
 
 rem Create plugins folder if does not exist
 if not exist .\resources\NUL mkdir .\resources
@@ -15,6 +16,17 @@ for %%f in (%plugins%) do (
 	if not exist resources\plugins\geoserver-%%f-plugin.zip powershell.exe Invoke-WebRequest -OutFile resources/plugins/geoserver-%%f-plugin.zip -Uri https://sourceforge.net/projects/geoserver/files/GeoServer/%GS_VERSION%/extensions/geoserver-%GS_VERSION%-%%f-plugin.zip/download -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::Chrome
 	@ECHO geoserver-%%f-plugin downloaded.
 )
+
+SET community_plugins=s3-geotiff
+
+rem Community plugins are not available from sourgeforge
+rem therefore source from https://build.geoserver.org/
+
+for %%f in (%community_plugins%) do (
+	if not exist resources\plugins\geoserver-%%f-plugin.zip powershell.exe Invoke-WebRequest -OutFile resources/plugins/geoserver-%%f-plugin.zip -Uri https://build.geoserver.org/geoserver/%BUILD_GS_VERSION%.x/community-latest/geoserver-%BUILD_GS_VERSION%-SNAPSHOT-%%f-plugin.zip -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::Chrome
+	@ECHO geoserver-%%f-plugin downloaded.
+)
+
 
 rem Build options include:
 rem    TOMCAT_EXTRAS  [true | false]
