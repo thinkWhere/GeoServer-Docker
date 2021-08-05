@@ -1,7 +1,7 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
 FROM tomcat:9.0-jre11-slim
 MAINTAINER thinkWhere<info@thinkwhere.com>
-#Credit: Tim Sutton<tim@linfiniti.com>
+# Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
 
 RUN apt-get -y update; apt-get -y install libapr1-dev \
@@ -88,10 +88,13 @@ RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
       done; \
     fi;
 
-# install Font files in resources/fonts if they exist
+# Install Font files in resources/fonts if they exist
 RUN if ls /tmp/resources/fonts/*.ttf > /dev/null 2>&1; then \
       cp -rf /tmp/resources/fonts/*.ttf /usr/share/fonts/truetype/; \
 	fi;
+
+# Pass in any custom parameters into the Tomcat server.xml config file
+RUN . /tmp/resources/tomcat/update_tomcat_settings.sh
 
 # Delete resources after installation
 RUN rm -rf /tmp/resources
