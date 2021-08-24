@@ -93,13 +93,11 @@ RUN if ls /tmp/resources/fonts/*.ttf > /dev/null 2>&1; then \
       cp -rf /tmp/resources/fonts/*.ttf /usr/share/fonts/truetype/; \
 	fi;
 
-# Pass in any custom parameters into the Tomcat server.xml config file
-RUN . /tmp/resources/tomcat/update_tomcat_settings.sh
+# Copy across script and XML stylesheet which will allow the Tomcat server.xml to be parameterised
+RUN cp /tmp/resources/tomcat/* $CATALINA_HOME/conf/
 
 # Delete resources after installation
 RUN rm -rf /tmp/resources
 
-
-#ENTRYPOINT "/opt/geoserver/bin/startup.sh"
-#CMD "/opt/geoserver/bin/startup.sh"
+# CMD "/opt/geoserver/bin/startup.sh"
 EXPOSE 8080

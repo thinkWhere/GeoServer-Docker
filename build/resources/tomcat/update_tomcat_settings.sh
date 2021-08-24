@@ -1,8 +1,10 @@
+#!/bin/bash
+
 # Update Tomcat server settings
 # Inspired by https://github.com/kartoza/docker-geoserver
 
-# Copy across stylesheet which will be used to parse the Tomcat server.xml config file
-cp /tmp/resources/tomcat/tomcat_server_stylesheet.xsl ${CATALINA_HOME}/conf/tomcat_server_stylesheet.xsl
+# Backup Tomcat server config before making any changes
+cp ${CATALINA_HOME}/conf/server.xml ${CATALINA_HOME}/conf/server_backup.xml
 
 # Setup any variables which have been passed into the build
 if [ -n "$HTTP_PORT" ]; then
@@ -101,3 +103,6 @@ transform="xsltproc \
   ${CATALINA_HOME}/conf/server.xml"
 
 eval "$transform"
+
+# un server
+. $CATALINA_HOME/bin/catalina.sh run
