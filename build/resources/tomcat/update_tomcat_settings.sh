@@ -104,5 +104,5 @@ transform="xsltproc \
 
 eval "$transform"
 
-# un server
+# Run server
 . $CATALINA_HOME/bin/catalina.sh run
