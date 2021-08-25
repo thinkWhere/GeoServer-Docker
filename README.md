@@ -200,6 +200,17 @@ docker run -d \
     thinkwhere/geserver
 ```
 
+It is also possible to pass in custom values to Tomcat which are controlled in server.xml, for example `MaxHttpHeaderSize`. A full list of these parameters can be found in `build/tomcat/update_tomcat_settings.sh`
+
+Environemnt variables can be passed in to the `docker run` command, as well as a request to run `update_tomcat_settings.sh` which will pass these values into the Tomcat `server.xml`. 
+
+For example - 
+
+```shell
+docker run -e "HTTP_MAX_HEADER_SIZE=524288" -t thinkwhere/geoserver:2.18.3 /bin/sh -c conf/update_tomcat_settings.sh
+```
+
+
 This repository contains a ``run.sh`` script for your convenience.
 
 ### Using docker-compose
