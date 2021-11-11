@@ -19,20 +19,20 @@ you should configure the host for it in the provided 71-apt-cacher-ng file.
 The image can be downloaded from our image on dockerhub.  There are tagged images for most versions that have been released since 2.8:
 
 ```shell
-docker pull thinkwhere/geoserver
+docker pull stevetarter/geoserver
 ```
 
 To build the image yourself:
 
 ```shell
-docker build -t thinkwhere/geoserver git://github.com/thinkwhere/geoserver-docker/build
+docker build -t stevetarter/geoserver git://github.com/SteveTarter/geoserver-docker/build
 ```
 
 Or for more control over the contents of the image, clone the repository first.  This way you can specify the version to build, and choose which fonts and plugins to include 
 
 
 ```shell
-git clone git://github.com/thinkwhere/geoserver-docker
+git clone git://github.com/SteveTarter/geoserver-docker
 
 cd geoserver/build
 
@@ -83,7 +83,7 @@ the `TOMCAT_EXTRAS` build-arg to `false` when building the image.  (This is the 
 build.sh.)
 
 ```shell
-docker build --build-arg TOMCAT_EXTRAS=false -t thinkwhere/geoserver-docker .
+docker build --build-arg TOMCAT_EXTRAS=false -t stevetarter/geoserver-docker .
 ```
 
 ### GeoWebCache
@@ -93,7 +93,7 @@ the stand-alone GeoWebCache, or another caching engine such as MapProxy, you can
 by setting the `DISABLE_GWC` build-arg to `true` when building the image.
 
 ```shell
-docker build --build-arg DISABLE_GWC=true -t thinkwhere/geoserver-docker .
+docker build --build-arg DISABLE_GWC=true -t stevetarter/geoserver-docker .
 ```
 
 **Note:** this removes all *gwc* jar files from the installation. If you are building with plugins that have 
@@ -109,7 +109,7 @@ they can remove them from the final image by setting the `JAI_IMAGEIO` build-arg
 when building the image.
 
 ```shell
-docker build --build-arg JAI_IMAGEIO=false -t thinkwhere/geoserver-docker .
+docker build --build-arg JAI_IMAGEIO=false -t stevetarter/geoserver-docker .
 ```
 
 ### GDAL Image Formats support
@@ -121,7 +121,7 @@ To include native GDAL libraries in the image, set the `GDAL_NATIVE` build-arg t
 when building the image.
 
 ```shell
-docker build --build-arg GDAL_NATIVE=true -t thinkwhere/geoserver-docker .
+docker build --build-arg GDAL_NATIVE=true -t stevetarter/geoserver-docker .
 ```
 
 To include the GDAL extension in the final image download the extension and place the zip
@@ -162,7 +162,7 @@ docker run \
 	-p 8080:8080 \
 	-d \
 	-v $HOME/geoserver_data:/opt/geoserver/data_dir \
-	-t thinkwhere/geoserver
+	-t stevetarter/geoserver
 ```
 
 ### Running multiple instances on the same machine
@@ -179,7 +179,7 @@ docker run \
 	-d \
 	-v $HOME/geoserver_data:/opt/geoserver/data_dir \
 	-e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" \
-	-t thinkwhere/geoserver
+	-t stevetarter/geoserver
 ```
 
 ### Setting Tomcat properties
@@ -197,7 +197,7 @@ Then pass the `setenv.sh` file as a volume at `/usr/local/tomcat/bin/setenv.sh` 
 ```shell
 docker run -d \
     -v $HOME/tomcat/setenv.sh:/usr/local/tomcat/bin/setenv.sh \
-    thinkwhere/geserver
+    stevetarter/geserver
 ```
 
 It is also possible to pass in custom values to Tomcat which are controlled in server.xml, for example `MaxHttpHeaderSize`. A full list of these parameters can be found in `build/tomcat/update_tomcat_settings.sh`
@@ -207,7 +207,7 @@ Environemnt variables can be passed in to the `docker run` command, as well as a
 For example - 
 
 ```shell
-docker run -e "HTTP_MAX_HEADER_SIZE=524288" -t thinkwhere/geoserver:2.18.3 /bin/sh -c conf/update_tomcat_settings.sh
+docker run -e "HTTP_MAX_HEADER_SIZE=524288" -t stevetarter/geoserver:2.18.3 /bin/sh -c conf/update_tomcat_settings.sh
 ```
 
 
