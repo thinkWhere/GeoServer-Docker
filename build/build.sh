@@ -15,7 +15,7 @@ GS_VERSION=2.18.3
 BUILD_GS_VERSION=${GS_VERSION:0:-2}
 
 # Add in selected plugins.  Comment out or modify as required
-plugins=(control-flow inspire monitor css ysld web-resource sldservice imagemosaic-jdbc pyramid )
+plugins=(control-flow inspire monitor css ysld web-resource sldservice imagemosaic-jdbc pyramid gdal )
 
 for p in "${plugins[@]}"
 do 
