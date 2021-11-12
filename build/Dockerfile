@@ -23,6 +23,7 @@ ENV JAVA_HOME=/usr/lib/jvm/default-java \
     GEOSERVER_DATA_DIR=/opt/geoserver/data_dir \
 	GDAL_SKIP="ECW JP2ECW" \
 	GDAL_DATA=/usr/local/gdal-data \
+    JAI_IMAGEIO=false \
 	LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/apr/lib:/usr/lib:/usr/lib/x86_64-linux-gnu"
 
 
