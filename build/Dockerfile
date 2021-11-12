@@ -23,6 +23,7 @@ ENV JAVA_HOME=/usr/lib/jvm/default-java \
     GEOSERVER_DATA_DIR=/opt/geoserver/data_dir \
 	GDAL_SKIP="ECW JP2ECW" \
 	GDAL_DATA=/usr/local/gdal-data \
+    JAI_IMAGEIO=false \
 	LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/apr/lib:/usr/lib:/usr/lib/x86_64-linux-gnu"
 
 
@@ -99,5 +100,8 @@ RUN cp /tmp/resources/tomcat/* $CATALINA_HOME/conf/
 # Delete resources after installation
 RUN rm -rf /tmp/resources
 
-# CMD "/opt/geoserver/bin/startup.sh"
+# Allow web access on the following port
 EXPOSE 8080
+
+# Run the Server
+CMD [ "sh", "-c", "$CATALINA_HOME/bin/catalina.sh run" ]
