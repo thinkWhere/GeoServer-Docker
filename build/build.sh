@@ -11,11 +11,14 @@ then
     mkdir ./resources/plugins
 fi
 
+# Clear out the plugins directory so those loaded in previous runs are cleared.
+rm -rf ./resource/plugins/*
+
 GS_VERSION=2.18.3
 BUILD_GS_VERSION=${GS_VERSION:0:-2}
 
 # Add in selected plugins.  Comment out or modify as required
-plugins=(control-flow inspire monitor css ysld web-resource sldservice imagemosaic-jdbc pyramid gdal )
+plugins=(control-flow inspire monitor css ysld web-resource sldservice pyramid gdal importer )
 
 for p in "${plugins[@]}"
 do 
@@ -27,12 +30,12 @@ done
 
 # Community plugins are not available from sourgeforge
 # therefore source from https://build.geoserver.org/
-community_plugins=(s3-geotiff )
+community_plugins=(s3-geotiff imagemosaic-jdbc pgraster )
 for c in "${community_plugins[@]}"
 do
-	if [ ! -f resources/plugins/geoserver-${p}-plugin.zip ]
+	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
 	then
-		wget -c https://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${p}-plugin.zip
+		wget -c https://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
 	fi
 done
 
