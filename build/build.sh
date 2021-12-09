@@ -30,7 +30,7 @@ done
 community_plugins=(s3-geotiff )
 for c in "${community_plugins[@]}"
 do
-	if [ ! -f resources/plugins/geoserver-${p}-plugin.zip ]
+	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
 	then
 		wget -c https://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${p}-plugin.zip
 	fi
