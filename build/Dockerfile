@@ -69,7 +69,7 @@ WORKDIR $CATALINA_HOME
 
 
 # Fetch the geoserver war file if it
-# is not available locally in the resources dir and
+# is not available locally in the resources dir and expand it
 RUN if [ ! -f /tmp/resources/geoserver.zip ]; then \
     wget --progress=bar -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/geoserver-${GS_VERSION}-war.zip \
       -O /tmp/resources/geoserver.zip; \
@@ -78,6 +78,11 @@ RUN if [ ! -f /tmp/resources/geoserver.zip ]; then \
     && unzip /tmp/geoserver/geoserver.war -d $CATALINA_HOME/webapps/geoserver \
     && rm -rf $CATALINA_HOME/webapps/geoserver/data \
     && rm -rf /tmp/geoserver
+
+# Replace Geoserver web.xml with a copy that enables CORS
+# FIXME - instead of copying an edited file, edit the existing in place
+RUN mv $CATALINA_HOME/webapps/geoserver/WEB-INF/web.xml $CATALINA_HOME/webapps/geoserver/WEB-INF/web.xml.orig
+RUN cp -p /tmp/resources/geoserver/web.xml $CATALINA_HOME/webapps/geoserver/WEB-INF/web.xml
 
 # Install any plugin zip files in resources/plugins
 RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
