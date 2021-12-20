@@ -12,7 +12,7 @@ then
 fi
 
 # Clear out the plugins directory so those loaded in previous runs are cleared.
-rm -rf ./resource/plugins/*
+rm -rf ./resources/plugins/*
 
 GS_VERSION=2.18.3
 BUILD_GS_VERSION=${GS_VERSION:0:-2}
@@ -39,9 +39,12 @@ do
 	fi
 done
 
+# Create timestamp to add to Docker image
+BUILD_TIMESTAMP=$(date +%Y%m%dT%H%M%S)
+
 ## build options include:
 #    TOMCAT_EXTRAS  [true | false]
 #    GDAL_NATIVE    [true | false]  - default false; build with GDAL support
 #    GS_VERSION              - specifies which version of geoserver is to be built
 
-docker build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=true -t stevetarter/geoserver:${GS_VERSION} .
+docker build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=true -t stevetarter/geoserver:${GS_VERSION}-${BUILD_TIMESTAMP} .
