@@ -14,7 +14,7 @@ fi
 # Clear out the plugins directory so those loaded in previous runs are cleared.
 rm -rf ./resources/plugins/*
 
-GS_VERSION=2.18.3
+GS_VERSION=2.19.4
 BUILD_GS_VERSION=${GS_VERSION:0:-2}
 
 # Add in selected plugins.  Comment out or modify as required
