@@ -27,19 +27,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images:  thinkwhere/geoserver
-          tags: ${{ matrix.tag }}
+      - name: Download build files
+        run: |
+          cd build
+          ./download.sh ${{ matrix.gs-version }}
 
-      - name: Build and push application-base
+      - name: Build and push geoserver
         uses: docker/build-push-action@v4
         with:
           context: ./build
           file: ./build/Dockerfile
           build-args: GS_VERSION=${{ matrix.gs-version }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ matrix.tag }}
+          labels: ${{ matrix.label }}
