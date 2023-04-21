@@ -39,7 +39,7 @@ jobs:
         with:
           context: ./build
           file: ./build/Dockerfile
-          build-context: GS_VERSION=${{ matrix.gs-version }}
+          build-args: GS_VERSION=${{ matrix.gs-version }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
