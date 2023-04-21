@@ -10,8 +10,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - gs-version: 2.22.3
-            docker-label: '2.22'
+          - tag: 2.22.2
+            gs-version: 2.22.2
+            label: 2.22
     permissions:
       contents: read
       packages: write
@@ -31,7 +32,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images:  thinkwhere/geoserver
-          tags: ${{ docker-label }}
+          tags: ${{ matrix.tag }}
 
       - name: Build and push application-base
         uses: docker/build-push-action@v4
