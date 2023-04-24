@@ -1,12 +1,12 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-FROM tomcat:9.0.19-jre11-slim
+FROM tomcat:9.0.20-jre11-slim
 #9.0-jre11-slim
 #9.0.65-jdk11-openjdk-slim
 MAINTAINER thinkWhere<info@thinkwhere.com>
 # Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
 
-RUN apt-get -y update; apt-get -y install libapr1-dev \
+RUN apt-get -y update --fix-missing; apt-get -y install libapr1-dev \
     libssl-dev wget zip curl xsltproc certbot cabextract
 
 RUN set -e \
