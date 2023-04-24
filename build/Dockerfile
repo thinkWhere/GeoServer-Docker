@@ -1,5 +1,6 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-FROM tomcat:9.0-jre11-slim
+FROM tomcat:9.0.65-jdk11-openjdk-slim
+#9.0-jre11-slim
 MAINTAINER thinkWhere<info@thinkwhere.com>
 # Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
@@ -41,7 +42,7 @@ RUN if [ "$TOMCAT_EXTRAS" = false ]; then \
   fi;
 
 # ---------- GS_Version will be passed in as a parameter ------------
-# ARG GS_VERSION=2.18.0
+ARG GS_VERSION
 
 # Add GDAL native libraries if the build-arg GDAL_NATIVE = true
 # EWC and JP2ECW are subjected to licence restrictions
