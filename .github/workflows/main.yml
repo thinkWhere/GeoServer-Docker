@@ -30,15 +30,14 @@ jobs:
       - name: Download build files
         run: |
           cd build
-          ./download.sh "${{ matrix.gs-version }}"`
+          ./download.sh "${{ matrix.gs-version }}"
 
       - name: Build and push geoserver
         uses: docker/build-push-action@v4
         with:
           context: ./build
           file: ./build/Dockerfile
-          build-args: |
-            GS_VERSION=${{ matrix.gs-version }}
+          build-args: GS_VERSION=${{ matrix.gs-version }}
           push: true
           tags: ${{ matrix.tag }}
           labels: ${{ matrix.label }}
