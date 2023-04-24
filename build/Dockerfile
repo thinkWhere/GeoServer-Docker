@@ -1,5 +1,5 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-FROM tomcat:9.0-jre11-slim
+FROM tomcat:9.0.20-jre11-slim
 #9.0-jre11-slim
 #9.0.65-jdk11-openjdk-slim
 MAINTAINER thinkWhere<info@thinkwhere.com>
