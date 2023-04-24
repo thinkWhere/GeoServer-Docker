@@ -41,7 +41,7 @@ RUN if [ "$TOMCAT_EXTRAS" = false ]; then \
   fi;
 
 # ---------- GS_Version will be passed in as a parameter ------------
-# ARG GS_VERSION=2.18.0
+ARG GS_VERSION
 
 # Add GDAL native libraries if the build-arg GDAL_NATIVE = true
 # EWC and JP2ECW are subjected to licence restrictions
