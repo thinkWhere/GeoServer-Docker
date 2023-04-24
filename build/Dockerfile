@@ -1,6 +1,7 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-FROM tomcat:9.0.65-jdk11-openjdk-slim
+FROM tomcat:9.0-jre11-slim
 #9.0-jre11-slim
+#9.0.65-jdk11-openjdk-slim
 MAINTAINER thinkWhere<info@thinkwhere.com>
 # Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
