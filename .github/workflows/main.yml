@@ -13,6 +13,9 @@ jobs:
           - tag: 2.22.2
             gs-version: 2.22.2
             label: 2.22
+          - tag: 2.23.0
+            gs-version: 2.23.0
+            label: 2.23
     permissions:
       contents: read
       packages: write
