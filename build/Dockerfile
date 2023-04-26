@@ -96,6 +96,7 @@ RUN if ls /tmp/resources/fonts/*.ttf > /dev/null 2>&1; then \
 
 # Copy across script and XML stylesheet which will allow the Tomcat server.xml to be parameterised
 RUN cp /tmp/resources/tomcat/* $CATALINA_HOME/conf/
+RUN chmod +x $CATALINA_HOME/conf/update_tomcat_settings.sh
 
 # Delete resources after installation
 RUN rm -rf /tmp/resources
