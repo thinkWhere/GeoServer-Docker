@@ -40,6 +40,7 @@ jobs:
       - name: Download build files
         run: |
           cd build
+          chmod +x ./download.sh
           sudo ./download.sh "${{ matrix.gs-version }}"
 
       - name: Build and push application-base
