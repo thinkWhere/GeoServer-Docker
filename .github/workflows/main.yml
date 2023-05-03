@@ -40,7 +40,7 @@ jobs:
       - name: Download build files
         run: |
           cd build
-          ./build/download.sh "${{ matrix.gs-version }}"`
+          ./download.sh "${{ matrix.gs-version }}"
 
       - name: Build and push application-base
         uses: docker/build-push-action@v4

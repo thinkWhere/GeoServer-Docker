@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # GS_VERSION param and abbreviated version
 GS_VERSION=$1
