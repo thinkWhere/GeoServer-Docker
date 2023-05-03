@@ -37,6 +37,12 @@ jobs:
           images:  thinkwhere/geoserver
           tags: ${{ matrix.tag }}
 
+      - name: Download build files
+        run: |
+          cd build
+          chmod +x ./download.sh
+          sudo ./download.sh "${{ matrix.gs-version }}"
+
       - name: Build and push application-base
         uses: docker/build-push-action@v4
         with:
