@@ -2,7 +2,7 @@ name: Build & publish tW images
 on:
   push:
     branches:
-      - "docker-build"
+      - "master"
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
