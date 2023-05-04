@@ -1,25 +1,26 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-FROM tomcat:9.0-jre11-slim
+FROM tomcat:9-jre11-temurin
+#9.0-jre11-slim
+#9.0.65-jdk11-openjdk-slim
 MAINTAINER thinkWhere<info@thinkwhere.com>
 # Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
 
-RUN apt-get -y update; apt-get -y install libapr1-dev \
+RUN apt-get clean; apt-get update --fix-missing; apt-get -y install libapr1-dev \
     libssl-dev wget zip curl xsltproc certbot cabextract
 
 RUN set -e \
     export DEBIAN_FRONTEND=noninteractive \
     dpkg-divert --local --rename --add /sbin/initctl \
 	# Set JAVA_HOME to /usr/lib/jvm/default-java and link it to OpenJDK installation
-    && ln -s /usr/lib/jvm/java-11-openjdk-amd64 /usr/lib/jvm/default-java \
+#    && ln -s /usr/lib/jvm/java-11-openjdk-amd64 /usr/lib/jvm/default-java \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
 
 #-------------Application Specific Stuff ----------------------------------------------------
 
-ENV JAVA_HOME=/usr/lib/jvm/default-java \
-	DEBIAN_FRONTEND=noninteractive \
+ENV DEBIAN_FRONTEND=noninteractive \
     GEOSERVER_DATA_DIR=/opt/geoserver/data_dir \
 	GDAL_SKIP="ECW JP2ECW" \
 	GDAL_DATA=/usr/local/gdal-data \
@@ -40,8 +41,8 @@ RUN if [ "$TOMCAT_EXTRAS" = false ]; then \
     rm -rf $CATALINA_HOME/webapps/manager; \
   fi;
 
-# ---------- GS_Version can be passed in as a parameter ------------
-ARG GS_VERSION=2.18.0
+# ---------- GS_Version will be passed in as a parameter ------------
+ARG GS_VERSION
 
 # Add GDAL native libraries if the build-arg GDAL_NATIVE = true
 # EWC and JP2ECW are subjected to licence restrictions
@@ -95,6 +96,7 @@ RUN if ls /tmp/resources/fonts/*.ttf > /dev/null 2>&1; then \
 
 # Copy across script and XML stylesheet which will allow the Tomcat server.xml to be parameterised
 RUN cp /tmp/resources/tomcat/* $CATALINA_HOME/conf/
+RUN chmod +x $CATALINA_HOME/conf/update_tomcat_settings.sh
 
 # Delete resources after installation
 RUN rm -rf /tmp/resources
