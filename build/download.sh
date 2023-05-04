@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # GS_VERSION param and abbreviated version
-GS_VERSION=$1
+GS_VERSION=2.23.0 #$1
 echo "Build $GS_VERSION"
 BUILD_GS_VERSION=${GS_VERSION:0:-2}
 echo "Build Minor $BUILD_GS_VERSION"
@@ -17,9 +17,8 @@ then
     mkdir ./resources/plugins
 fi
 
-
 # Add in selected plugins.  Comment out or modify as required
-plugins=(control-flow inspire monitor css ysld web-resource sldservice imagemosaic-jdbc )
+plugins=(control-flow inspire monitor css ysld web-resource sldservice imagemosaic-jdbc gwc-s3)
 
 for p in "${plugins[@]}"
 do
