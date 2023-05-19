@@ -56,7 +56,7 @@ RUN if [ "$GDAL_NATIVE" = true ]; then \
     mkdir /usr/local/gdal_native_libs && \
     tar -xvf /tmp/resources/gdal192-Ubuntu12-gcc4.6.3-x86_64.tar.gz -C /usr/local/gdal_native_libs; \
     apt-get update; \
-	apt-get install -y gdal-bin libgdal-java --fix-missing; \
+	apt-get install -y gdal-bin --fix-missing; \
 fi;
 
 
