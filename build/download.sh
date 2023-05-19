@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # GS_VERSION param and abbreviated version
-GS_VERSION=$1 #2.23.0
+GS_VERSION=2.23.0 #$1
 echo "Build $GS_VERSION"
-BUILD_GS_VERSION=${GS_VERSION:0:-2} #2.23
+BUILD_GS_VERSION=2.23 #${GS_VERSION:0:-2}
 echo "Build Minor $BUILD_GS_VERSION"
 
 # Create plugins folder if does not exist
