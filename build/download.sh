@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # GS_VERSION param and abbreviated version
-GS_VERSION=$1
+GS_VERSION=2.22.0 # $1
 echo "Build $GS_VERSION"
 BUILD_GS_VERSION=${GS_VERSION:0:-2}
 echo "Build Minor $BUILD_GS_VERSION"
@@ -31,12 +31,12 @@ done
 
 # Community plugins are not available from sourgeforge
 # therefore source from https://build.geoserver.org/
-community_plugins=(s3-geotiff ) #jms-cluster activeMQ-broker )
+community_plugins=(s3-geotiff jms-cluster ) #activeMQ-broker )
 for c in "${community_plugins[@]}"
 do
-	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
+	if [ ! -f resources/plugins/geoserver-${p}-plugin.zip ]
 	then
 	# https://build.geoserver.org/geoserver/2.23.x/community-latest/geoserver-2.23-SNAPSHOT-jms-cluster-plugin.zip
-		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
+		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${p}-plugin.zip
 	fi
 done
