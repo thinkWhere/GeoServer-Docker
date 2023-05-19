@@ -11,11 +11,11 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.18.3
+GS_VERSION=2.23.0
 BUILD_GS_VERSION=${GS_VERSION:0:-2}
 
 # Add in selected plugins.  Comment out or modify as required
-plugins=(control-flow inspire monitor css ysld web-resource sldservice imagemosaic-jdbc )
+plugins=(control-flow inspire monitor css ysld web-resource sldservice gwc-s3)
 
 for p in "${plugins[@]}"
 do 
@@ -27,12 +27,12 @@ done
 
 # Community plugins are not available from sourgeforge
 # therefore source from https://build.geoserver.org/
-community_plugins=(s3-geotiff )
+community_plugins=(s3-geotiff jms-cluster activeMQ-broker )
 for c in "${community_plugins[@]}"
 do
-	if [ ! -f resources/plugins/geoserver-${p}-plugin.zip ]
+	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
 	then
-		wget -c https://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${p}-plugin.zip
+		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
 	fi
 done
 
