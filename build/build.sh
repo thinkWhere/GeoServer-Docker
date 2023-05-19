@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Create plugins folder if does not exist
 if [ ! -d ./resources ]
