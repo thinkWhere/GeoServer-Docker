@@ -34,9 +34,9 @@ done
 community_plugins=(s3-geotiff jms-cluster ) #activeMQ-broker )
 for c in "${community_plugins[@]}"
 do
-	if [ ! -f resources/plugins/geoserver-${p}-plugin.zip ]
+	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
 	then
 	# https://build.geoserver.org/geoserver/2.23.x/community-latest/geoserver-2.23-SNAPSHOT-jms-cluster-plugin.zip
-		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${p}-plugin.zip
+		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
 	fi
 done
