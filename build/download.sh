@@ -31,7 +31,7 @@ done
 
 # Community plugins are not available from sourgeforge
 # therefore source from https://build.geoserver.org/
-community_plugins=(s3-geotiff jms-cluster ) #activeMQ-broker )
+community_plugins=(s3-geotiff ) # jms-cluster #activeMQ-broker )
 for c in "${community_plugins[@]}"
 do
 	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
