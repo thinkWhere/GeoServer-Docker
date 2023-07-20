@@ -19,6 +19,9 @@ jobs:
           - tag: 2.22.0
             gs-version: 2.22.0
             label: 2.22.0
+          - tag: 2.22.1
+            gs-version: 2.22.1
+            label: 2.22.1
           - tag: 2.22.2
             gs-version: 2.22.2
             label: 2.22.2
