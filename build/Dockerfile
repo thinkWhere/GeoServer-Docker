@@ -9,8 +9,9 @@ MAINTAINER thinkWhere<info@thinkwhere.com>
 # Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
 
-RUN apt-get clean; apt-get update --fix-missing; apt-get -y install libapr1-dev \
-    libssl-dev wget zip curl xsltproc certbot cabextract
+RUN apt-get clean
+RUN apt-get update --fix-missing
+RUN apt-get -y install libapr1-dev libssl-dev wget zip curl xsltproc certbot cabextract
 
 RUN set -e \
     export DEBIAN_FRONTEND=noninteractive \
