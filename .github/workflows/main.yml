@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tag: 2.22.1
+          - tag: 2.22.1-arm64 # 2.22.1
             gs-version: 2.22.1
             label: 2.22.1
     permissions:
@@ -39,8 +39,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          # images: thinkwhere/geoserver
-          images: thinkwhere/geoserver-arm64
+          images: thinkwhere/geoserver
           tags: ${{ matrix.tag }}
 
       - name: Download build files
