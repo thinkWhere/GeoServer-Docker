@@ -39,6 +39,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
+          # images: thinkwhere/geoserver
           images: thinkwhere/geoserver-arm64
           tags: ${{ matrix.tag }}
 
