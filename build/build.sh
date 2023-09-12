@@ -11,7 +11,7 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.23.0
+GS_VERSION=2.22.1
 BUILD_GS_VERSION=${GS_VERSION:0:-2}
 
 # Add in selected plugins.  Comment out or modify as required
@@ -41,4 +41,4 @@ done
 #    GDAL_NATIVE    [true | false]  - default false; build with GDAL support
 #    GS_VERSION              - specifies which version of geoserver is to be built
 
-docker build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=true -t thinkwhere/geoserver:${GS_VERSION} .
+docker buildx build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=false --platform linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6 -t thinkwhere/geoserver:${GS_VERSION} --push .
