@@ -1,7 +1,7 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-# Defaults to amd64
+# Defaults to amd64:
 # FROM tomcat:9-jre11-temurin
-# Valid for arm64
+# Valid for arm64:
 FROM tomcat:9-jre11-temurin@sha256:96f05b79814a1fb0523e3063668b4e3be7a1bbb01e6e6b2757915764381825ac
 #9.0-jre11-slim
 #9.0.65-jdk11-openjdk-slim
@@ -9,9 +9,8 @@ MAINTAINER thinkWhere<info@thinkwhere.com>
 # Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
 
-RUN apt-get clean
-RUN apt-get update --fix-missing
-RUN apt-get -y install libapr1-dev libssl-dev wget zip curl xsltproc certbot cabextract
+RUN apt-get clean; apt-get update --fix-missing; apt-get -y install libapr1-dev \
+    libssl-dev wget zip curl xsltproc certbot cabextract
 
 RUN set -e \
     export DEBIAN_FRONTEND=noninteractive \
@@ -28,9 +27,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     GEOSERVER_DATA_DIR=/opt/geoserver/data_dir \
 	GDAL_SKIP="ECW JP2ECW" \
 	GDAL_DATA=/usr/local/gdal-data \
-	# AMD64 architecture
+	# AMD64 architecture:
 	# LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/apr/lib:/usr/lib:/usr/lib/x86_64-linux-gnu"
-	# ARM64 architecture
+	# ARM64 architecture:
 	LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/apr/lib:/usr/lib:/usr/lib/aarch64-linux-gnu"
 
 

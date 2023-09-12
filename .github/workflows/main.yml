@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tag: amr64-2.22.1
+          - tag: 2.22.1
             gs-version: 2.22.1
             label: 2.22.1
     permissions:
@@ -30,7 +30,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: 'amd64,arm64,arm'
+          platforms: 'arm64' # 'amd64'
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -39,7 +39,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: thinkwhere/geoserver
+          # images: thinkwhere/geoserver
+          images: thinkwhere/geoserver-arm64
           tags: ${{ matrix.tag }}
 
       - name: Download build files
