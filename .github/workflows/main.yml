@@ -10,30 +10,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tag: 2.20.7
-            gs-version: 2.20.7
-            label: 2.20
-          - tag: 2.21.5
-            gs-version: 2.21.5
-            label: 2.21
-          - tag: 2.22.0
-            gs-version: 2.22.0
-            label: 2.22.0
           - tag: 2.22.1
             gs-version: 2.22.1
             label: 2.22.1
-          - tag: 2.22.2
-            gs-version: 2.22.2
-            label: 2.22.2
-          - tag: 2.23.0
-            gs-version: 2.23.0
-            label: 2.23
-          - tag: 2.23.1
-            gs-version: 2.23.1
-            label: 2.23.1
-          - tag: 2.19.5
-            gs-version: 2.19.5
-            label: 2.19.5
     permissions:
       contents: read
       packages: write
@@ -48,11 +27,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: 'arm64' # 'amd64'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images:  thinkwhere/geoserver
+          images: thinkwhere/geoserver-arm64
           tags: ${{ matrix.tag }}
 
       - name: Download build files
