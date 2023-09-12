@@ -36,4 +36,4 @@ rem    GS_VERSION                     - specifies which version of geoserver is 
 rem Valid for AMD64 (i.e., t3a.medium)
 rem docker build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=true -t thinkwhere/geoserver:${GS_VERSION} .
 rem Valid also for ARM64 (i.e., t4g.medium)
-docker buildx build --build-arg GS_VERSION=%GS_VERSION% --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=false --platform linux/amd64,linux/arm64 -t thinkwhere/geoserver:%GS_VERSION% --push .
+docker buildx build --build-arg GS_VERSION=%GS_VERSION% --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=false --platform linux/arm64/v8 -t thinkwhere/geoserver:%GS_VERSION% --push .
