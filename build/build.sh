@@ -27,14 +27,16 @@ done
 
 # Community plugins are not available from sourgeforge
 # therefore source from https://build.geoserver.org/
-community_plugins=(jms-cluster) # cog-s3) # activeMQ-broker )
-for c in "${community_plugins[@]}"
-do
-	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
-	then
-		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
-	fi
-done
+#community_plugins=(jms-cluster) # cog-s3) # activeMQ-broker )
+#for c in "${community_plugins[@]}"
+#do
+	#if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
+	#then
+		#wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
+	#fi
+#done
+wget -c https://build.geoserver.org/geoserver/2.26.x/community-latest/geoserver-2.26-SNAPSHOT-cog-s3-plugin.zip -O resources/plugins/geoserver-cog-s3-plugin.zip
+wget -c https://build.geoserver.org/geoserver/2.26.x/community-latest/geoserver-2.26-SNAPSHOT-jms-cluster-plugin.zip -O resources/plugins/geoserver-jms-cluster-plugin.zip
 
 ## build options include:
 #    TOMCAT_EXTRAS  [true | false]
