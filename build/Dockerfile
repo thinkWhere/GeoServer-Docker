@@ -1,6 +1,6 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
 # Defaults to amd64:
-FROM tomcat:9-jre11-temurin
+FROM tomcat:9-jre11-temurin@sha256:bf23f2dffde0c1b6ef6eaba95e05f531a3a6f274c5234d10126d73b092db18b6
 # Valid for arm64:
 # FROM tomcat:9-jre11-temurin@sha256:96f05b79814a1fb0523e3063668b4e3be7a1bbb01e6e6b2757915764381825ac
 #9.0-jre11-slim
