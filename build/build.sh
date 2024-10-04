@@ -27,12 +27,12 @@ done
 
 # Community plugins are not available from sourgeforge
 # therefore source from https://build.geoserver.org/
-community_plugins=(jms-cluster cog-s3) # activeMQ-broker )
+community_plugins=(jms-cluster) # cog-s3) # activeMQ-broker )
 for c in "${community_plugins[@]}"
 do
 	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
 	then
-		wget -c https://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
+		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
 	fi
 done
 
