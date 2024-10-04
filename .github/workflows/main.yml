@@ -10,9 +10,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tag: 2.22.1-arm64 # 2.22.1
-            gs-version: 2.22.1
-            label: 2.22.1
+          - tag: 2.26.0-jms # 2.22.1
+            gs-version: 2.26.0
+            label: 2.26.0-jms
     permissions:
       contents: read
       packages: write
