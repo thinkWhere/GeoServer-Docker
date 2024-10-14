@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "master"
+      - "OPT-671-apply-patches-to-geoserver"
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -10,9 +11,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tag: 2.26.0-jms # 2.22.1
-            gs-version: 2.26.0
-            label: 2.26.0-jms
+          - tag: 2.25.2-arm64
+            gs-version: 2.25.2
+            label: 2.25.2
     permissions:
       contents: read
       packages: write

@@ -1,6 +1,6 @@
 @Echo off
 
-SET GS_VERSION=2.18.3
+SET GS_VERSION=2.25.2
 SET BUILD_GS_VERSION=%GS_VERSION:~0,4%
 
 rem Create plugins folder if does not exist
@@ -17,7 +17,7 @@ for %%f in (%plugins%) do (
 	@ECHO geoserver-%%f-plugin downloaded.
 )
 
-SET community_plugins=cog
+SET community_plugins=cog-s3
 
 rem Community plugins are not available from sourgeforge
 rem therefore source from https://build.geoserver.org/
