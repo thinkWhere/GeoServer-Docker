@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tag: 2.25.2-arm64-GM
+          - tag: 2.25.2-arm64
             gs-version: 2.25.2
             label: 2.25.2
     permissions:
