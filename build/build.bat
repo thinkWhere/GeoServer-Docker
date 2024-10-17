@@ -1,6 +1,6 @@
 @Echo off
 
-SET GS_VERSION=2.18.3
+SET GS_VERSION=2.25.2
 SET BUILD_GS_VERSION=%GS_VERSION:~0,4%
 
 rem Create plugins folder if does not exist
@@ -17,7 +17,7 @@ for %%f in (%plugins%) do (
 	@ECHO geoserver-%%f-plugin downloaded.
 )
 
-SET community_plugins=cog
+SET community_plugins=cog-s3
 
 rem Community plugins are not available from sourgeforge
 rem therefore source from https://build.geoserver.org/
@@ -34,6 +34,6 @@ rem    GDAL_NATIVE    [true | false]  - default false; build with GDAL support
 rem    GS_VERSION                     - specifies which version of geoserver is to be built
 
 rem Valid for AMD64 (i.e., t3a.medium)
-rem docker build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=true -t thinkwhere/geoserver:${GS_VERSION} .
+docker build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=false --platform linux/amd64 -t thinkwhere/geoserver:${GS_VERSION} .
 rem Valid also for ARM64 (i.e., t4g.medium)
-docker buildx build --build-arg GS_VERSION=%GS_VERSION% --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=false --platform linux/arm64/v8 -t thinkwhere/geoserver:%GS_VERSION% --push .
+rem docker buildx build --build-arg GS_VERSION=%GS_VERSION% --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=false --platform linux/arm64/v8 -t thinkwhere/geoserver:%GS_VERSION% --push .
