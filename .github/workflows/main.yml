@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - tag: 2.25.2-arm64
+          - tag: 2.25.2-amd64
             gs-version: 2.25.2
             label: 2.25.2
     permissions:
@@ -58,5 +58,5 @@ jobs:
             GS_VERSION=${{ matrix.gs-version }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          platforms: linux/arm64/v8
+          platforms: linux/amd64 #linux/arm64/v8
           labels: ${{ steps.meta.outputs.labels }}
