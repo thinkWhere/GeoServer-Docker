@@ -1,10 +1,35 @@
 #!/bin/bash
 
-# GS_VERSION param and abbreviated version
-GS_VERSION=$1
-echo "Build $GS_VERSION"
-BUILD_GS_VERSION=${GS_VERSION:0:-2}
-echo "Build Minor $BUILD_GS_VERSION"
+set -euo pipefail
+
+CONFIG_FILE="${CONFIG_FILE:-./build-config.yml}"
+
+if [ ! -f "$CONFIG_FILE" ]
+then
+	echo "Config file not found: $CONFIG_FILE"
+	exit 1
+fi
+
+cfg_get() {
+	local key="$1"
+	local value
+	value=$(grep -E "^${key}:" "$CONFIG_FILE" | head -n 1 | sed -E "s/^${key}:[[:space:]]*//")
+	value=${value//\"/}
+	value=${value//\'/}
+	echo "$value"
+}
+
+# GS_VERSION can be passed as first arg; fallback to config value.
+GS_VERSION="${1:-$(cfg_get gs_version)}"
+BUILD_GS_VERSION=${GS_VERSION%.*}
+PLUGINS_CSV=$(cfg_get plugins)
+COMMUNITY_PLUGINS_CSV=$(cfg_get community_plugins)
+
+IFS=',' read -r -a plugins <<< "$PLUGINS_CSV"
+IFS=',' read -r -a community_plugins <<< "$COMMUNITY_PLUGINS_CSV"
+
+echo "Build ${GS_VERSION}"
+echo "Build minor ${BUILD_GS_VERSION}"
 
 # Create plugins folder if does not exist
 if [ ! -d ./resources ]
@@ -17,26 +42,30 @@ then
     mkdir ./resources/plugins
 fi
 
-# Add in selected plugins.  Comment out or modify as required
-plugins=(control-flow inspire monitor css ysld web-resource sldservice gwc-s3)
-
 for p in "${plugins[@]}"
 do
-	if [ ! -f resources/plugins/geoserver-${p}-plugin.zip ]
+	p=$(echo "$p" | xargs)
+	[ -z "$p" ] && continue
+	if [ ! -s resources/plugins/geoserver-${p}-plugin.zip ]
 	then
-	# https://sourceforge.net/projects/geoserver/files/GeoServer/2.23.0/extensions/geoserver-2.23.0-gdal-plugin.zip
-		wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-${p}-plugin.zip -O resources/plugins/geoserver-${p}-plugin.zip
+		wget https://sourceforge.net/projects/geoserver/files/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-${p}-plugin.zip/download -O resources/plugins/geoserver-${p}-plugin.zip
+		echo "geoserver-${p}-plugin downloaded."
+	else
+		echo "Skipping existing plugin: geoserver-${p}-plugin.zip"
 	fi
 done
 
 # Community plugins are not available from sourgeforge
 # therefore source from https://build.geoserver.org/
-community_plugins=(cog-s3 jms-cluster) #activeMQ-broker )
 for c in "${community_plugins[@]}"
 do
-	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
+	c=$(echo "$c" | xargs)
+	[ -z "$c" ] && continue
+	if [ ! -s resources/plugins/geoserver-${c}-plugin.zip ]
 	then
-	# https://build.geoserver.org/geoserver/2.23.x/community-latest/geoserver-2.23-SNAPSHOT-jms-cluster-plugin.zip
-		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
+		wget https://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
+		echo "geoserver-${c}-plugin downloaded."
+	else
+		echo "Skipping existing community plugin: geoserver-${c}-plugin.zip"
 	fi
 done
