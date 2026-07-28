@@ -5,7 +5,7 @@
 gs_version: 2.28.4
 tomcat_image: 9.0.118-jdk17-temurin-noble
 gdal_version: 3.8.4
-gdal_native: false
+gdal_native: true
 tomcat_extras: false
 build_platform: linux/arm64/v8
 
