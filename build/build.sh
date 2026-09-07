@@ -1,5 +1,22 @@
 #!/bin/bash
 
+CONFIG_FILE="${CONFIG_FILE:-./build-config.yml}"
+
+if [ ! -f "$CONFIG_FILE" ]
+then
+	echo "Config file not found: $CONFIG_FILE"
+	exit 1
+fi
+
+cfg_get() {
+	local key="$1"
+	local value
+	value=$(grep -E "^${key}:" "$CONFIG_FILE" | head -n 1 | sed -E "s/^${key}:[[:space:]]*//")
+	value=${value//\"/}
+	value=${value//\'/}
+	echo "$value"
+}
+
 # Create plugins folder if does not exist
 if [ ! -d ./resources ]
 then
@@ -11,28 +28,43 @@ then
     mkdir ./resources/plugins
 fi
 
-GS_VERSION=2.26.0
-BUILD_GS_VERSION=${GS_VERSION:0:-2}
+GS_VERSION=$(cfg_get gs_version)
+TOMCAT_IMAGE=$(cfg_get tomcat_image)
+GDAL_VERSION=$(cfg_get gdal_version)
+GDAL_NATIVE=$(cfg_get gdal_native)
+TOMCAT_EXTRAS=$(cfg_get tomcat_extras)
+BUILD_PLATFORM=$(cfg_get build_platform)
+PLUGINS_CSV=$(cfg_get plugins)
+COMMUNITY_PLUGINS_CSV=$(cfg_get community_plugins)
 
-# Add in selected plugins.  Comment out or modify as required
-plugins=(control-flow inspire monitor css ysld web-resource sldservice gwc-s3)
+BUILD_GS_VERSION=${GS_VERSION%.*}
+
+IFS=',' read -r -a plugins <<< "$PLUGINS_CSV"
+IFS=',' read -r -a community_plugins <<< "$COMMUNITY_PLUGINS_CSV"
 
 for p in "${plugins[@]}"
 do 
-	if [ ! -f resources/plugins/geoserver-${p}-plugin.zip ]
+	p=$(echo "$p" | xargs)
+	[ -z "$p" ] && continue
+	if [ ! -s resources/plugins/geoserver-${p}-plugin.zip ]
 	then
-		wget -c http://downloads.sourceforge.net/project/geoserver/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-${p}-plugin.zip -O resources/plugins/geoserver-${p}-plugin.zip
+		wget https://sourceforge.net/projects/geoserver/files/GeoServer/${GS_VERSION}/extensions/geoserver-${GS_VERSION}-${p}-plugin.zip/download -O resources/plugins/geoserver-${p}-plugin.zip
+		echo "geoserver-${p}-plugin downloaded."
+	else
+		echo "Skipping existing plugin: geoserver-${p}-plugin.zip"
 	fi
 done
 
-# Community plugins are not available from sourgeforge
-# therefore source from https://build.geoserver.org/
-community_plugins=(cog-s3 jms-cluster) # activeMQ-broker )
 for c in "${community_plugins[@]}"
 do
-	if [ ! -f resources/plugins/geoserver-${c}-plugin.zip ]
+	c=$(echo "$c" | xargs)
+	[ -z "$c" ] && continue
+	if [ ! -s resources/plugins/geoserver-${c}-plugin.zip ]
 	then
-		wget -c http://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
+		wget https://build.geoserver.org/geoserver/${BUILD_GS_VERSION}.x/community-latest/geoserver-${BUILD_GS_VERSION}-SNAPSHOT-${c}-plugin.zip -O resources/plugins/geoserver-${c}-plugin.zip
+		echo "geoserver-${c}-plugin downloaded."
+	else
+		echo "Skipping existing community plugin: geoserver-${c}-plugin.zip"
 	fi
 done
 
@@ -42,6 +74,6 @@ done
 #    GS_VERSION              - specifies which version of geoserver is to be built
 
 # Valid for AMD64 (i.e., t3a.medium)
-docker build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=true -t thinkwhere/geoserver:${GS_VERSION} .
+docker build --platform ${BUILD_PLATFORM} --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_IMAGE=${TOMCAT_IMAGE} --build-arg GDAL_VERSION=${GDAL_VERSION} --build-arg TOMCAT_EXTRAS=${TOMCAT_EXTRAS} --build-arg GDAL_NATIVE=${GDAL_NATIVE} -t thinkwhere/geoserver:${GS_VERSION} .
 # Valid also for ARM64 (i.e., t4g.medium)
 # docker buildx build --build-arg GS_VERSION=${GS_VERSION} --build-arg TOMCAT_EXTRAS=false --build-arg GDAL_NATIVE=false --platform linux/arm64/v8 -t thinkwhere/geoserver:${GS_VERSION} --push .

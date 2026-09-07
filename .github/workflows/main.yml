@@ -3,16 +3,10 @@ on:
   push:
     branches:
       - "master"
+      - "upgrade-geoserver-2.28.x-testing-branch"
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - tag: 2.26.0-jms # 2.22.1
-            gs-version: 2.26.0
-            label: 2.26.0-jms
     permissions:
       contents: read
       packages: write
@@ -27,10 +21,63 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Load build config
+        id: cfg
+        shell: bash
+        run: |
+          set -euo pipefail
+          CONFIG_FILE="build/build-config.yml"
+
+          cfg_get() {
+            local key="$1"
+            local value
+            value=$(grep -E "^${key}:" "$CONFIG_FILE" | head -n 1 | sed -E "s/^${key}:[[:space:]]*//")
+            value=${value//\"/}
+            value=${value//\'/}
+            echo "$value"
+          }
+
+          cfg_get_optional() {
+            local key="$1"
+            local value
+            value=$(grep -E "^${key}:" "$CONFIG_FILE" | head -n 1 | sed -E "s/^${key}:[[:space:]]*//" || true)
+            value=${value//\"/}
+            value=${value//\'/}
+            echo "$value"
+          }
+
+          GS_VERSION="$(cfg_get gs_version)"
+          TOMCAT_IMAGE="$(cfg_get tomcat_image)"
+          GDAL_VERSION="$(cfg_get gdal_version)"
+          GDAL_NATIVE="$(cfg_get gdal_native)"
+          TOMCAT_EXTRAS="$(cfg_get tomcat_extras)"
+          BUILD_PLATFORM="$(cfg_get build_platform)"
+          DOCKER_IMAGE="$(cfg_get docker_image)"
+          DOCKER_TAG="$(cfg_get_optional docker_tag)"
+          DOCKER_LABEL="$(cfg_get_optional docker_label)"
+
+          ARCH="$(echo "$BUILD_PLATFORM" | cut -d'/' -f2)"
+          if [ -z "$DOCKER_TAG" ] || [ "$DOCKER_TAG" = "auto" ]
+          then
+            TAG="${GS_VERSION}-${ARCH}"
+          else
+            TAG="$DOCKER_TAG"
+          fi
+
+          echo "gs_version=${GS_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tomcat_image=${TOMCAT_IMAGE}" >> "$GITHUB_OUTPUT"
+          echo "gdal_version=${GDAL_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "gdal_native=${GDAL_NATIVE}" >> "$GITHUB_OUTPUT"
+          echo "tomcat_extras=${TOMCAT_EXTRAS}" >> "$GITHUB_OUTPUT"
+          echo "build_platform=${BUILD_PLATFORM}" >> "$GITHUB_OUTPUT"
+          echo "docker_image=${DOCKER_IMAGE}" >> "$GITHUB_OUTPUT"
+          echo "docker_label=${DOCKER_LABEL}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: linux/arm64/v8
+          platforms: ${{ steps.cfg.outputs.build_platform }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -39,14 +86,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: thinkwhere/geoserver
-          tags: ${{ matrix.tag }}
+          images: ${{ steps.cfg.outputs.docker_image }}
+          tags: ${{ steps.cfg.outputs.tag }}
 
       - name: Download build files
         run: |
           cd build
           chmod +x ./download.sh
-          sudo ./download.sh "${{ matrix.gs-version }}"
+          sudo ./download.sh "${{ steps.cfg.outputs.gs_version }}"
 
       - name: Build and push application-base
         uses: docker/build-push-action@v4
@@ -54,8 +101,14 @@ jobs:
           context: ./build
           file: ./build/Dockerfile
           build-args: |
-            GS_VERSION=${{ matrix.gs-version }}
+            GS_VERSION=${{ steps.cfg.outputs.gs_version }}
+            TOMCAT_IMAGE=${{ steps.cfg.outputs.tomcat_image }}
+            GDAL_VERSION=${{ steps.cfg.outputs.gdal_version }}
+            GDAL_NATIVE=${{ steps.cfg.outputs.gdal_native }}
+            TOMCAT_EXTRAS=${{ steps.cfg.outputs.tomcat_extras }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          platforms: linux/arm64/v8
-          labels: ${{ steps.meta.outputs.labels }}
+          platforms: ${{ steps.cfg.outputs.build_platform }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
+            ${{ steps.cfg.outputs.docker_label }}

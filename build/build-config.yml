@@ -1,0 +1,27 @@
+# Centralized build configuration used by build.sh and build.bat
+# Keep values as plain scalars or comma-separated lists.
+#
+# ARM64 example overrides:
+gs_version: 2.28.4
+tomcat_image: 9.0.118-jdk17-temurin-noble
+gdal_version: 3.8.4
+gdal_native: true
+tomcat_extras: false
+build_platform: linux/arm64/v8
+
+#gs_version: 2.28.4
+#tomcat_image: 9.0.118-jdk17-temurin-noble
+#gdal_version: 3.8.4
+#gdal_native: true
+#tomcat_extras: false
+#build_platform: linux/amd64
+docker_image: thinkwhere/geoserver
+docker_tag: auto
+docker_label: org.opencontainers.image.vendor=thinkWhere
+
+# Stable GeoServer extension plugins (comma-separated)
+# Does not need to append GDAL plugin, as this is handled by the build script if gdal_native is true.
+plugins: control-flow,css,inspire,monitor,sldservice,ysld,web-resource,gwc-s3,vectortiles,ogcapi-features
+
+# Community GeoServer plugins (comma-separated)
+community_plugins: cog-s3,ogcapi-tiled-features

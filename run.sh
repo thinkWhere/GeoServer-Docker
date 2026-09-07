@@ -1,21 +1,39 @@
 #!/bin/bash
-docker kill geoserver_8085
-docker rm geoserver_8085
 
-DATA_DIR=~/geoserver_data
-if [ ! -d $DATA_DIR ]
+set -euo pipefail
+
+CONFIG_FILE="${CONFIG_FILE:-./build/build-config.yml}"
+GS_PORT="${GS_PORT:-8085}"
+DATA_DIR="${DATA_DIR:-$(pwd)/build/resources/data_dir}"
+
+if [ ! -f "$CONFIG_FILE" ]
 then
-    mkdir -p $DATA_DIR
-fi 
+    echo "Config file not found: $CONFIG_FILE"
+    exit 1
+fi
 
+cfg_get() {
+    local key="$1"
+    local value
+    value=$(grep -E "^${key}:" "$CONFIG_FILE" | head -n 1 | sed -E "s/^${key}:[[:space:]]*//")
+    value=${value//\"/}
+    value=${value//\'/}
+    echo "$value"
+}
+
+GS_VERSION=$(cfg_get gs_version)
+
+mkdir -p "$DATA_DIR"
+
+docker rm -f geoserver_${GS_PORT} >/dev/null 2>&1 || true
 
 docker run \
-	--name=geoserver_8085 \
-	-p 8085:8080 \
+	--name=geoserver_${GS_PORT} \
+	-p ${GS_PORT}:8080 \
 	-d \
-	-v $DATA_DIR:/opt/geoserver/data_dir \
-	-e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" \
-	-t thinkwhere/geoserver:latest
+	-v "$DATA_DIR:/opt/geoserver/data_dir" \
+	-e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_${GS_PORT}.log" \
+	-t thinkwhere/geoserver:${GS_VERSION}
 
 
 # alt docker run command if s3-geotiff plugin is used
