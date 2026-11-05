@@ -4,6 +4,7 @@ on:
     branches:
       - "master"
       - "upgrade-geoserver-2.28.x-testing-branch"
+      - "upgrade-geoserver-3.0.x-testing-branch"
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest

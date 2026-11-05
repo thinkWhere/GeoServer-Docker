@@ -3,24 +3,21 @@ ARG GDAL_VERSION
 ARG TOMCAT_IMAGE
 FROM ghcr.io/osgeo/gdal:ubuntu-full-${GDAL_VERSION} AS gdal-builder
 
-# Defaults to amd64:
+# GeoServer 3.x requires Jakarta EE Servlet 6.1 => Tomcat 11.0.x, and Java 17+.
+# TOMCAT_IMAGE is set in build-config.yml (e.g. 11.0.27-jdk21-temurin-noble).
+# The tomcat image is multi-arch, so this builds for amd64 and arm64 alike;
+# pick the target with --platform (see build.sh / build-config.yml).
 FROM tomcat:${TOMCAT_IMAGE}
-# Valid for arm64:
-# FROM tomcat:9-jre11-temurin@sha256:96f05b79814a1fb0523e3063668b4e3be7a1bbb01e6e6b2757915764381825ac
-#9.0-jre11-slim
-#9.0.65-jdk11-openjdk-slim
 LABEL maintainer="thinkWhere <info@thinkwhere.com>"
 # Credit: Tim Sutton<tim@linfiniti.com>
 # kartoza/docker-geoserver
 
 RUN apt-get clean; apt-get update --fix-missing; apt-get -y install libapr1-dev \
-    libssl-dev wget zip curl xsltproc certbot cabextract
+    libssl-dev wget zip unzip curl xsltproc certbot cabextract
 
 RUN set -e \
     export DEBIAN_FRONTEND=noninteractive \
     dpkg-divert --local --rename --add /sbin/initctl \
-	# Set JAVA_HOME to /usr/lib/jvm/default-java and link it to OpenJDK installation
-#    && ln -s /usr/lib/jvm/java-11-openjdk-amd64 /usr/lib/jvm/default-java \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -46,9 +43,11 @@ RUN set -e; \
     printf '%s\n' \
       '#!/bin/sh' \
       "export LD_LIBRARY_PATH=\${LD_LIBRARY_PATH:+\${LD_LIBRARY_PATH}:}${LD_LIBRARY_PATH_BASE}:${ARCH_LIB_DIR}" \
+      'export JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"' \
       > "$CATALINA_HOME/bin/setenv.sh"; \
     chmod +x "$CATALINA_HOME/bin/setenv.sh"
 
+# resources/data_dir is excluded via .dockerignore (runtime bind-mount only).
 ADD resources /tmp/resources
 
 # Optionally remove Tomcat manager, docs, and examples
@@ -66,6 +65,10 @@ ARG GS_VERSION
 ARG GDAL_NATIVE=true
 
 # GDAL support is optional and enabled with build-arg GDAL_NATIVE=true.
+# The JNI bindings (libgdalalljni.so) and gdal.jar are taken from the
+# ghcr.io/osgeo/gdal image; `gdal-bin` comes from the distro of the tomcat
+# base image. Keep GDAL_VERSION aligned with that distro's GDAL
+# (Ubuntu 24.04 "noble" => GDAL 3.8.4) so the native library versions match.
 RUN --mount=from=gdal-builder,source=/usr/share/java,target=/tmp/gdal-builder-java \
         --mount=from=gdal-builder,source=/usr/lib,target=/tmp/gdal-builder-lib \
         if [ "$GDAL_NATIVE" = true ]; then \
@@ -100,10 +103,23 @@ RUN if [ ! -f /tmp/resources/geoserver.zip ]; then \
 # Install any plugin zip files in resources/plugins
 RUN if ls /tmp/resources/plugins/*.zip > /dev/null 2>&1; then \
       for p in /tmp/resources/plugins/*.zip; do \
-        unzip $p -d /tmp/gs_plugin \
-        && mv /tmp/gs_plugin/*.jar $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/ \
+        unzip -o $p -d /tmp/gs_plugin \
+        && mv -f /tmp/gs_plugin/*.jar $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/ \
         && rm -rf /tmp/gs_plugin; \
       done; \
+    fi;
+
+# ---------------------------------------------------------------------------
+# Align the GDAL SWIG bindings jar with the native libraries.
+#
+# The GeoServer gdal extension bundles gdal-3.2.0.jar, but the JNI .so files
+# installed above come from GDAL ${GDAL_VERSION}. GeoServer's own docs require
+# the bindings jar to match the installed GDAL, so drop the bundled jar and use
+# the gdal.jar shipped by the osgeo/gdal image instead.
+# ---------------------------------------------------------------------------
+RUN if [ "$GDAL_NATIVE" = true ] && [ -f /usr/share/java/gdal.jar ]; then \
+      rm -f $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/gdal-*.jar; \
+      cp /usr/share/java/gdal.jar $CATALINA_HOME/webapps/geoserver/WEB-INF/lib/gdal.jar; \
     fi;
 
 # Install Font files in resources/fonts if they exist
@@ -118,5 +134,4 @@ RUN chmod +x $CATALINA_HOME/conf/update_tomcat_settings.sh
 # Delete resources after installation
 RUN rm -rf /tmp/resources
 
-# CMD "/opt/geoserver/bin/startup.sh"
 EXPOSE 8080
