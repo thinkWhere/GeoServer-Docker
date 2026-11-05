@@ -75,7 +75,7 @@ Windows example with repo-local data directory:
 
 ```powershell
 docker rm -f geoserver_local 2>$null
-docker run --name geoserver_local -p 8085:8080 -d -v "C:\data\DATA_TEAM\geoserver_upgrade\generation_of_images\GeoServer-Docker\build\resources\data_dir:/opt/geoserver/data_dir" -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" thinkwhere/geoserver:2.28.4
+docker run --name geoserver_local -p 8085:8080 -d -v "C:\data\DATA_TEAM\geoserver_upgrade\AMI\generation_of_images\GeoServer-Docker\build\resources\data_dir:/opt/geoserver/data_dir" -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" thinkwhere/geoserver:3.0.1
 ```
 
 Open:
@@ -137,3 +137,57 @@ On push to `master`, GitHub Actions does this:
 - `GDAL_NATIVE=false` skips GDAL native setup and skips GDAL extension auto-download.
 - Local scripts and CI both rely on build args and config-driven values to avoid hardcoded updates in multiple places.
 
+
+## Version compatibility (GeoServer 3.0.1)
+
+GeoServer 3.0 moved to Jakarta EE Servlet 6.1. This constrains the stack:
+
+| Component | Value | Why |
+| --- | --- | --- |
+| GeoServer | `3.0.1` | `geoserver-3.0.1-war.zip` on SourceForge |
+| Servlet container | Tomcat **11.0.x** | Tomcat 9 and 10.1 are **not supported** by GeoServer 3.x |
+| Java | **21** (17 is the minimum) | base image `tomcat:11.0.27-jdk21-temurin-noble` |
+| GDAL | `3.8.4` | the Tomcat image is Ubuntu 24.04 "noble", whose `gdal-bin` package is 3.8.4 — the JNI libraries copied from `ghcr.io/osgeo/gdal:ubuntu-full-3.8.4` must match it |
+
+GeoServer 3.0.1 uses GeoTools 35.1 / ImageIO-Ext 2.1.1, which is tested against
+GDAL 3.x. The gdal extension bundles `gdal-3.2.0.jar`; the Dockerfile replaces
+it with the `gdal.jar` from the osgeo image so the Java bindings match the
+installed native libraries, as GeoServer's documentation requires.
+
+Both the Tomcat and osgeo/gdal base images are multi-arch, so either
+architecture builds cleanly. `build_platform` in `build/build-config.yml`
+selects one per build:
+
+| `build_platform` | Published tag |
+| --- | --- |
+| `linux/amd64` | `thinkwhere/geoserver:3.0.1-amd64` |
+| `linux/arm64/v8` | `thinkwhere/geoserver:3.0.1-arm64` |
+
+To publish both, set one value, commit and push, then switch the value and push
+again. The Dockerfile resolves the correct native library path from
+`TARGETARCH`, so nothing else needs changing.
+
+### Plugins built into the image
+
+Official extensions: `control-flow`, `css`, `monitor`, `gwc-s3`, `vectortiles`,
+`ogcapi-features`, `gdal`, `image`, `arcgrid`.
+
+Community: `cog-s3`.
+
+Community plugin file names do **not** follow `gs_version`: the `3.0.x`
+nightly directory publishes `geoserver-3.0.3-SNAPSHOT-<name>-plugin.zip`
+(the `2.28.x` branch published `geoserver-2.28-SNAPSHOT-<name>-plugin.zip`).
+`download.sh` therefore resolves the real file name from the directory index
+rather than constructing it.
+
+### About `build/resources/data_dir`
+
+This is **not** part of the image build. It is the stock GeoServer sample data
+directory, bind-mounted at runtime by `run.sh` / `run.bat` for local smoke
+testing (`-v .../data_dir:/opt/geoserver/data_dir`). It is untracked in git and
+is excluded from the Docker build context via `build/.dockerignore`.
+
+## Running the published image locally
+
+See [RUN_LOCALLY.md](RUN_LOCALLY.md) for a step-by-step guide to pulling the
+image from Docker Hub and running it against your own data directory.

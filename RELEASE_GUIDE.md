@@ -86,7 +86,7 @@ Expected behavior:
 
 ```powershell
 docker rm -f geoserver_local 2>$null
-docker run --name geoserver_local -p 8085:8080 -d -v "C:\data\DATA_TEAM\geoserver_upgrade\generation_of_images\GeoServer-Docker\build\resources\data_dir:/opt/geoserver/data_dir" -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" thinkwhere/geoserver:2.28.4
+docker run --name geoserver_local -p 8085:8080 -d -v "C:\data\DATA_TEAM\geoserver_upgrade\AMI\generation_of_images\GeoServer-Docker\build\resources\data_dir:/opt/geoserver/data_dir" -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" thinkwhere/geoserver:3.0.1
 ```
 
 Validation checklist:
