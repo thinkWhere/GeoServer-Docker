@@ -154,8 +154,18 @@ GDAL 3.x. The gdal extension bundles `gdal-3.2.0.jar`; the Dockerfile replaces
 it with the `gdal.jar` from the osgeo image so the Java bindings match the
 installed native libraries, as GeoServer's documentation requires.
 
-Both the Tomcat and osgeo/gdal base images publish `linux/arm64` variants, so
-`build_platform: linux/arm64/v8` builds cleanly.
+Both the Tomcat and osgeo/gdal base images are multi-arch, so either
+architecture builds cleanly. `build_platform` in `build/build-config.yml`
+selects one per build:
+
+| `build_platform` | Published tag |
+| --- | --- |
+| `linux/amd64` | `thinkwhere/geoserver:3.0.1-amd64` |
+| `linux/arm64/v8` | `thinkwhere/geoserver:3.0.1-arm64` |
+
+To publish both, set one value, commit and push, then switch the value and push
+again. The Dockerfile resolves the correct native library path from
+`TARGETARCH`, so nothing else needs changing.
 
 ### Plugins built into the image
 

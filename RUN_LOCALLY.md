@@ -7,8 +7,9 @@ This guide assumes the image has already been built and pushed by the GitHub
 Actions workflow.
 
 - **Image:** `thinkwhere/geoserver`
-- **Tag:** `<geoserver-version>-<arch>` — e.g. `3.0.1-arm64` (ARM64) or
-  `3.0.1-amd64` (x86-64)
+- **Tag:** `<geoserver-version>-<arch>` — e.g. `3.0.1-amd64` (x86-64) or
+  `3.0.1-arm64` (ARM64). The examples below use the amd64 tag; substitute the
+  arm64 one if that is your hardware.
 - **GeoServer:** 3.0.1 on Tomcat 11 / Java 21, with GDAL 3.8.4 native support
 
 ---
@@ -50,20 +51,19 @@ To see what is actually published, browse
 ## 3. Pull the image
 
 ```bash
-docker pull thinkwhere/geoserver:3.0.1-arm64
+docker pull thinkwhere/geoserver:3.0.1-amd64
 ```
 
-If Docker picks the wrong architecture (common on Apple Silicon with multi-arch
-tags), force it:
+If Docker picks the wrong architecture, force it:
 
 ```bash
-docker pull --platform linux/arm64 thinkwhere/geoserver:3.0.1-arm64
+docker pull --platform linux/amd64 thinkwhere/geoserver:3.0.1-amd64
 ```
 
 Verify it arrived:
 
 ```bash
-docker image inspect thinkwhere/geoserver:3.0.1-arm64 \
+docker image inspect thinkwhere/geoserver:3.0.1-amd64 \
   --format 'arch={{.Architecture}} size={{.Size}}'
 ```
 
@@ -130,7 +130,7 @@ docker run -d \
   -p 8085:8080 \
   -v "$HOME/geoserver_data:/opt/geoserver/data_dir" \
   -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" \
-  thinkwhere/geoserver:3.0.1-arm64
+  thinkwhere/geoserver:3.0.1-amd64
 ```
 
 ### Windows (PowerShell)
@@ -141,13 +141,13 @@ docker run -d `
   -p 8085:8080 `
   -v "C:\geoserver_data:/opt/geoserver/data_dir" `
   -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" `
-  thinkwhere/geoserver:3.0.1-arm64
+  thinkwhere/geoserver:3.0.1-amd64
 ```
 
 ### Windows (CMD, single line)
 
 ```bat
-docker run -d --name geoserver_local -p 8085:8080 -v "C:\geoserver_data:/opt/geoserver/data_dir" -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" thinkwhere/geoserver:3.0.1-arm64
+docker run -d --name geoserver_local -p 8085:8080 -v "C:\geoserver_data:/opt/geoserver/data_dir" -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" thinkwhere/geoserver:3.0.1-amd64
 ```
 
 What the flags do:
@@ -173,7 +173,7 @@ docker run -d \
   -v "$HOME/geoserver_data:/opt/geoserver/data_dir" \
   -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8085.log" \
   -e "HTTP_MAX_HEADER_SIZE=524288" \
-  thinkwhere/geoserver:3.0.1-arm64 \
+  thinkwhere/geoserver:3.0.1-amd64 \
   /bin/sh -c conf/update_tomcat_settings.sh
 ```
 
@@ -314,7 +314,7 @@ Use different host ports, container names **and** data directories:
 docker run -d --name geoserver_8086 -p 8086:8080 \
   -v "$HOME/geoserver_data_b:/opt/geoserver/data_dir" \
   -e "GEOSERVER_LOG_LOCATION=/opt/geoserver/data_dir/logs/geoserver_8086.log" \
-  thinkwhere/geoserver:3.0.1-arm64
+  thinkwhere/geoserver:3.0.1-amd64
 ```
 
 ---

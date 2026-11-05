@@ -2,7 +2,7 @@
 # Keep values as plain scalars or comma-separated lists.
 #
 # ---------------------------------------------------------------------------
-# GeoServer 3.0.1 / Java 21 / Tomcat 11 / ARM64
+# GeoServer 3.0.1 / Java 21 / Tomcat 11
 # ---------------------------------------------------------------------------
 # GeoServer 3.0 moved to Jakarta EE Servlet 6.1, so it REQUIRES Tomcat 11.0.x
 # (Tomcat 9 and 10.1 are not supported) and Java 17+ (21 used here).
@@ -16,10 +16,14 @@ tomcat_image: 11.0.27-jdk21-temurin-noble
 gdal_version: 3.8.4
 gdal_native: true
 tomcat_extras: false
-build_platform: linux/arm64/v8
+# Target architecture for the image. One value per build/push:
+#   linux/amd64     -> publishes tag <gs_version>-amd64
+#   linux/arm64/v8  -> publishes tag <gs_version>-arm64
+# Switch this line and push again to publish the other architecture.
+build_platform: linux/amd64
 
-# AMD64 variant (same versions, different platform):
-#build_platform: linux/amd64
+# ARM64 variant (same versions, different platform):
+#build_platform: linux/arm64/v8
 
 docker_image: thinkwhere/geoserver
 docker_tag: auto
